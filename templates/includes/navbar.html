@@ -35,8 +35,8 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
                         <li><a class="dropdown-item" href="{% url 'portfolio:project_list' %}">All Projects</a></li>
-                        {% for category in nav_categories %}
-                        <li><a class="dropdown-item" href="{% url 'portfolio:category_projects' category.slug %}">{{ category.name }}</a></li>
+                        {% for skill in nav_skills %}
+                        <li><a class="dropdown-item" href="{% url 'portfolio:skill_projects' skill.slug %}">{{ skill.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>

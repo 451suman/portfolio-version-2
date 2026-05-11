@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 
 from .models import BlogPost, Comment
-from blog.models import Category, Tag
+from .models import Category, Tag
 
 
 class BlogListView(ListView):
@@ -146,7 +146,7 @@ class BlogDetailView(DetailView):
         )
 
         # Get categories and tags for sidebar
-        from Blog.models import Category, Tag
+        from .models import Category, Tag
 
         context["categories"] = Category.objects.filter(is_active=True).order_by("name")
         context["tags"] = Tag.objects.all().order_by("name")

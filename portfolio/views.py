@@ -71,15 +71,63 @@ class ProjectListView(ListView):
         return context
 
 
+class SkillProjectListView(ListView):
+    model = Project
+    template_name = "portfolio/project_list.html"
+    context_object_name = "projects"
+    paginate_by = 9
+
+    def get_queryset(self):
+        queryset = (
+            Project.objects.filter(status="completed")
+            .prefetch_related("technologies", "images")
+            .order_by("-is_featured", "-created_at")
+        )
+
+        # Filter by skill
+        skill_slug = self.kwargs.get("slug")
+        if skill_slug:
+            queryset = queryset.filter(technologies__slug=skill_slug)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get current skill
+        skill_slug = self.kwargs.get("slug")
+        if skill_slug:
+            try:
+                skill = Skill.objects.get(slug=skill_slug)
+                context["current_skill"] = skill
+                context["page_title"] = f"Projects: {skill.name}"
+            except Skill.DoesNotExist:
+                context["current_skill"] = None
+                context["page_title"] = "Projects"
+        else:
+            context["current_skill"] = None
+            context["page_title"] = "Projects"
+
+        # Get skills for sidebar
+        context["skills"] = Skill.objects.all().order_by(
+            "-is_featured", "order", "name"
+        )
+
+        # Featured projects
+        context["featured_projects"] = Project.objects.filter(
+            is_featured=True, status="completed"
+        )[:3]
+
+        return context
+
+
 class ProjectDetailView(DetailView):
     model = Project
     template_name = "portfolio/project_detail.html"
     context_object_name = "project"
 
     def get_queryset(self):
-        return Project.objects.prefetch_related(
-            "technologies", "categories", "tags", "images"
-        )
+        return Project.objects.prefetch_related("technologies", "images")
 
     def get_object(self):
         slug = self.kwargs.get("slug")

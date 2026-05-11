@@ -42,7 +42,7 @@ def site_settings(request):
     # Get featured projects
     context["featured_projects"] = Project.objects.filter(
         is_featured=True, status="completed"
-    ).prefetch_related("technologies", "categories", "tags")[:6]
+    ).prefetch_related("technologies", "images")[:6]
 
     # Get featured skills
     context["featured_skills"] = Skill.objects.filter(is_featured=True).order_by(
@@ -56,9 +56,7 @@ def site_settings(request):
         .prefetch_related("categories", "tags")[:3]
     )
 
-    # Get all categories for navigation
-    context["nav_categories"] = Category.objects.filter(is_active=True).order_by(
-        "order"
-    )
+    # Get all skills for navigation
+    context["nav_skills"] = Skill.objects.filter(is_featured=True).order_by("order")
 
     return context

@@ -9,4 +9,10 @@ urlpatterns = [
     path(
         "project/<slug:slug>/", views.ProjectDetailView.as_view(), name="project_detail"
     ),
+    # Skill projects
+    path(
+        "skill/<slug:slug>/",
+        views.SkillProjectListView.as_view(),
+        name="skill_projects",
+    ),
 ]
