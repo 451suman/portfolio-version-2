@@ -1,50 +1,13 @@
 from django.db import models
-from django.urls import reverse
 from django.utils.text import slugify
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True)
-    description = models.TextField(blank=True)
-    icon_class = models.CharField(
-        max_length=50, blank=True, help_text="Font Awesome icon class"
-    )
-    order = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["order"]
-        verbose_name_plural = "Categories"
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=60, unique=True)
-    color = models.CharField(
-        max_length=7, default="#007bff", help_text="Hex color code"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+from django.urls import reverse
 
 
 class Skill(models.Model):
+    """
+    Technical skills and technologies
+    """
+
     SKILL_LEVELS = [
         ("beginner", "Beginner"),
         ("intermediate", "Intermediate"),
@@ -69,6 +32,7 @@ class Skill(models.Model):
 
     class Meta:
         ordering = ["-is_featured", "order", "name"]
+        verbose_name_plural = "Skills"
 
     def __str__(self):
         return f"{self.name} ({self.get_level_display()})"
@@ -80,6 +44,10 @@ class Skill(models.Model):
 
 
 class Experience(models.Model):
+    """
+    Professional experience entries
+    """
+
     EMPLOYMENT_TYPES = [
         ("full_time", "Full Time"),
         ("part_time", "Part Time"),
@@ -102,13 +70,16 @@ class Experience(models.Model):
     description = models.TextField()
     achievements = models.JSONField(default=list, help_text="List of achievements")
     technologies = models.ManyToManyField(Skill, related_name="experiences", blank=True)
-    company_logo = models.ImageField(upload_to="company_logos/", blank=True, null=True)
+    company_logo = models.ImageField(
+        upload_to="experience/logos/", blank=True, null=True
+    )
     company_url = models.URLField(blank=True)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-is_current", "-start_date", "order"]
+        verbose_name_plural = "Experiences"
 
     def __str__(self):
         return f"{self.position} at {self.company}"
@@ -121,6 +92,10 @@ class Experience(models.Model):
 
 
 class Project(models.Model):
+    """
+    Portfolio projects with comprehensive details
+    """
+
     PROJECT_STATUS = [
         ("planning", "Planning"),
         ("in_progress", "In Progress"),
@@ -157,8 +132,6 @@ class Project(models.Model):
         blank=True, help_text="Technical architecture details"
     )
     technologies = models.ManyToManyField(Skill, related_name="projects", blank=True)
-    categories = models.ManyToManyField(Category, related_name="projects", blank=True)
-    tags = models.ManyToManyField(Tag, related_name="projects", blank=True)
     view_count = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -166,6 +139,9 @@ class Project(models.Model):
 
     class Meta:
         ordering = ["-is_featured", "-created_at"]
+        indexes = [
+            models.Index(fields=["status", "is_featured", "created_at"]),
+        ]
 
     def __str__(self):
         return self.title
@@ -182,12 +158,21 @@ class Project(models.Model):
         self.view_count += 1
         self.save(update_fields=["view_count"])
 
+    @property
+    def main_tech_stack(self):
+        """Return top 3 skills for display"""
+        return self.technologies.all()[:3]
+
 
 class ProjectImage(models.Model):
+    """
+    Multiple images for a project
+    """
+
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to="projects/gallery/")
+    image = models.ImageField(upload_to="project_images/", blank=True, null=True)
     title = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)
@@ -195,7 +180,41 @@ class ProjectImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["order"]
+        ordering = ["project", "order"]
 
     def __str__(self):
         return f"{self.project.title} - Image {self.order}"
+
+
+class SocialLink(models.Model):
+    """
+    Social media links for portfolio
+    """
+
+    PLATFORM_CHOICES = [
+        ("github", "GitHub"),
+        ("linkedin", "LinkedIn"),
+        ("twitter", "Twitter"),
+        ("email", "Email"),
+        ("instagram", "Instagram"),
+        ("facebook", "Facebook"),
+        ("youtube", "YouTube"),
+        ("website", "Website"),
+    ]
+
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES, unique=True)
+    url = models.URLField(max_length=255, help_text="URL to social media profile")
+    icon_class = models.CharField(max_length=50, help_text="Font Awesome icon class")
+    is_active = models.BooleanField(default=True)
+    display_order = models.PositiveIntegerField(
+        default=0, help_text="Order in which to display"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["display_order", "platform"]
+        verbose_name = "Social Link"
+        verbose_name_plural = "Social Links"
+
+    def __str__(self):
+        return f"{self.get_platform_display()}: {self.url}"

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib import messages
 
-from .models import Project, Category, Skill, Tag, ProjectImage
+from .models import Project, Skill, ProjectImage
 
 
 class ProjectListView(ListView):
@@ -16,7 +16,7 @@ class ProjectListView(ListView):
     def get_queryset(self):
         queryset = (
             Project.objects.filter(status="completed")
-            .prefetch_related("technologies", "categories", "tags", "images")
+            .prefetch_related("technologies", "images")
             .order_by("-is_featured", "-created_at")
         )
 
@@ -28,24 +28,12 @@ class ProjectListView(ListView):
                 | Q(description__icontains=search_query)
                 | Q(short_description__icontains=search_query)
                 | Q(technologies__name__icontains=search_query)
-                | Q(categories__name__icontains=search_query)
-                | Q(tags__name__icontains=search_query)
             ).distinct()
-
-        # Category filter
-        category_slug = self.request.GET.get("category", "")
-        if category_slug:
-            queryset = queryset.filter(categories__slug=category_slug)
 
         # Skill filter
         skill_slug = self.request.GET.get("skill", "")
         if skill_slug:
             queryset = queryset.filter(technologies__slug=skill_slug)
-
-        # Tag filter
-        tag_slug = self.request.GET.get("tag", "")
-        if tag_slug:
-            queryset = queryset.filter(tags__slug=tag_slug)
 
         # Status filter
         status = self.request.GET.get("status", "")
@@ -57,22 +45,12 @@ class ProjectListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get filters for sidebar
-        context["categories"] = (
-            Category.objects.filter(is_active=True, projects__status="completed")
-            .distinct()
-            .order_by("order")
-        )
-
+        # Get skills for sidebar
         context["skills"] = Skill.objects.all().order_by(
             "-is_featured", "order", "name"
         )
-        context["tags"] = Tag.objects.all().order_by("name")
-
         # Get current filters
-        context["current_category"] = self.request.GET.get("category", "")
         context["current_skill"] = self.request.GET.get("skill", "")
-        context["current_tag"] = self.request.GET.get("tag", "")
         context["current_status"] = self.request.GET.get("status", "")
         context["search_query"] = self.request.GET.get("search", "")
 
@@ -121,7 +99,7 @@ class ProjectDetailView(DetailView):
 
         # Get related projects
         context["related_projects"] = (
-            Project.objects.filter(categories__in=project.categories.all())
+            Project.objects.filter(technologies__in=project.technologies.all())
             .exclude(id=project.id)
             .distinct()[:3]
         )

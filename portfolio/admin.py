@@ -1,53 +1,6 @@
 from django.contrib import admin
 from django.db.models import Count
-from .models import Category, Tag, Skill, Experience, Project, ProjectImage
-
-
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "is_active", "project_count", "created_at")
-    list_filter = ("is_active", "created_at")
-    search_fields = ("name", "description")
-    prepopulated_fields = {"slug": ("name",)}
-    readonly_fields = ("created_at",)
-    list_editable = ("is_active",)
-    ordering = ("name",)
-
-    fieldsets = (
-        ("Basic Info", {"fields": ("name", "slug", "description")}),
-        ("Display", {"fields": ("is_active", "order")}),
-        ("Timestamps", {"fields": ("created_at",)}),
-    )
-
-    def project_count(self, obj):
-        return obj.projects.count()
-
-    project_count.short_description = "Projects"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).annotate(project_count=Count("projects"))
-
-
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "color", "project_count", "created_at")
-    search_fields = ("name",)
-    prepopulated_fields = {"slug": ("name",)}
-    readonly_fields = ("created_at",)
-    ordering = ("name",)
-
-    fieldsets = (
-        ("Basic Info", {"fields": ("name", "slug", "color")}),
-        ("Timestamps", {"fields": ("created_at",)}),
-    )
-
-    def project_count(self, obj):
-        return obj.projects.count()
-
-    project_count.short_description = "Projects"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).annotate(project_count=Count("projects"))
+from .models import Skill, Experience, Project, ProjectImage
 
 
 @admin.register(Skill)
@@ -104,6 +57,9 @@ class ProjectImageInline(admin.TabularInline):
     fields = ("image", "title", "description", "order", "is_featured")
     ordering = ("order",)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("project")
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -122,12 +78,11 @@ class ProjectAdmin(admin.ModelAdmin):
         "is_featured",
         "is_open_source",
         "start_date",
-        "categories",
     )
     search_fields = ("title", "description", "short_description")
     list_editable = ("status", "is_featured", "is_open_source")
     prepopulated_fields = {"slug": ("title",)}
-    filter_horizontal = ("technologies", "categories", "tags")
+    filter_horizontal = ("technologies",)
     inlines = [ProjectImageInline]
     readonly_fields = ("view_count", "like_count", "created_at", "updated_at")
     ordering = ("-is_featured", "-created_at")
@@ -153,7 +108,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Technical", {"fields": ("technologies", "categories", "tags")}),
+        ("Technical", {"fields": ("technologies",)}),
         ("Documentation", {"fields": ("challenges", "architecture")}),
         (
             "Statistics",
@@ -173,7 +128,7 @@ class ProjectImageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Basic Info", {"fields": ("project", "title", "description")}),
-        ("Display", {"fields": ("image", "order")}),
+        ("Display", {"fields": ("order",)}),
         ("Timestamps", {"fields": ("created_at",)}),
     )
 

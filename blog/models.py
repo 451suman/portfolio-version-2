@@ -6,6 +6,47 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True)
+    description = models.TextField(blank=True)
+    icon_class = models.CharField(
+        max_length=50, blank=True, help_text="Font Awesome icon class"
+    )
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=60, unique=True)
+    color = models.CharField(
+        max_length=7, default="#007bff", help_text="Hex color code"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
 class BlogPost(models.Model):
     POST_STATUS = [
         ("draft", "Draft"),
@@ -35,11 +76,9 @@ class BlogPost(models.Model):
         max_length=160, blank=True, help_text="SEO meta description"
     )
     categories = models.ManyToManyField(
-        "portfolio.Category", related_name="blog_posts", blank=True
+        "Category", related_name="blog_posts", blank=True
     )
-    tags = models.ManyToManyField(
-        "portfolio.Tag", related_name="blog_posts", blank=True
-    )
+    tags = models.ManyToManyField("Tag", related_name="blog_posts", blank=True)
     view_count = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)

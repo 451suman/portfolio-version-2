@@ -31,17 +31,7 @@
                                        placeholder="Search projects..." value="{{ search_query }}">
                             </div>
                             <div class="col-md-2">
-                                <label for="category" class="form-label">Category</label>
-                                <select name="category" id="category" class="form-select">
-                                    <option value="">All Categories</option>
-                                    {% for category in categories %}
-                                    <option value="{{ category.slug }}" 
-                                            {% if current_category == category.slug %}selected{% endif %}>
-                                        {{ category.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                                    </div>
                             <div class="col-md-2">
                                 <label for="skill" class="form-label">Skill</label>
                                 <select name="skill" id="skill" class="form-select">
@@ -162,12 +152,6 @@
                             {% endif %}
                         </div>
                         
-                        <!-- Categories -->
-                        <div class="project-categories mt-2">
-                            {% for category in project.categories.all|slice:":2" %}
-                            <span class="badge bg-info">{{ category.name }}</span>
-                            {% endfor %}
-                        </div>
                     </div>
                     
                     <div class="card-footer bg-transparent">
@@ -276,8 +260,6 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="stat-card text-center">
-                    <div class="stat-number counter" data-target="{{ project_stats.total_categories }}">0</div>
-                    <div class="stat-label">Categories</div>
                 </div>
             </div>
         </div>

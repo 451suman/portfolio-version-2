@@ -1,7 +1,7 @@
 from django.conf import settings
 from accounts.models import Profile, SocialLink
-from portfolio.models import Project, Skill, Category
-from blog.models import BlogPost
+from portfolio.models import Project, Skill
+from blog.models import BlogPost, Category, Tag
 
 
 def site_settings(request):

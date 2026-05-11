@@ -128,27 +128,6 @@
                     </div>
                 </div>
 
-                <!-- Categories & Tags -->
-                <div class="project-taxonomy mb-5">
-                    <h3 class="mb-4">Categories & Tags</h3>
-                    <div class="categories-list mb-3">
-                        <strong>Categories:</strong>
-                        {% for category in project.categories.all %}
-                        <a href="{% url 'portfolio:category_projects' category.slug %}" class="badge bg-info me-2">
-                            {{ category.name }}
-                        </a>
-                        {% endfor %}
-                    </div>
-                    <div class="tags-list">
-                        <strong>Tags:</strong>
-                        {% for tag in project.tags.all %}
-                        <a href="{% url 'portfolio:tag_projects' tag.slug %}" class="badge bg-secondary me-2">
-                            {{ tag.name }}
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-
                 <!-- Project Stats -->
                 <div class="project-stats mb-5">
                     <h3 class="mb-4">Project Statistics</h3>

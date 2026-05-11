@@ -7,8 +7,8 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 
 from accounts.models import Profile, SocialLink
-from portfolio.models import Project, Skill, Category, Experience, Tag
-from blog.models import BlogPost
+from portfolio.models import Project, Skill, Experience
+from blog.models import BlogPost, Category, Tag
 from contact.models import ContactMessage, NewsletterSubscription
 
 
@@ -32,12 +32,12 @@ class HomePageView(TemplateView):
         # Featured projects with optimized queries
         context["featured_projects"] = Project.objects.filter(
             is_featured=True, status="completed"
-        ).prefetch_related("technologies", "categories", "tags", "images")[:6]
+        ).prefetch_related("technologies", "images")[:6]
 
         # Latest projects
         context["latest_projects"] = Project.objects.filter(
             status="completed"
-        ).prefetch_related("technologies", "categories")[:3]
+        ).prefetch_related("technologies")[:3]
 
         # Featured skills
         context["featured_skills"] = Skill.objects.filter(is_featured=True).order_by(
@@ -74,7 +74,6 @@ class HomePageView(TemplateView):
             "featured_projects": Project.objects.filter(
                 is_featured=True, status="completed"
             ).count(),
-            "total_categories": Category.objects.filter(is_active=True).count(),
             "total_skills": Skill.objects.count(),
         }
 
@@ -153,11 +152,9 @@ class SearchView(TemplateView):
                     | Q(description__icontains=query)
                     | Q(short_description__icontains=query)
                     | Q(technologies__name__icontains=query)
-                    | Q(categories__name__icontains=query)
-                    | Q(tags__name__icontains=query)
                 )
                 .distinct()
-                .prefetch_related("technologies", "categories", "tags")
+                .prefetch_related("technologies")
             )
 
             # Search blog posts
@@ -166,8 +163,6 @@ class SearchView(TemplateView):
                     Q(title__icontains=query)
                     | Q(content__icontains=query)
                     | Q(excerpt__icontains=query)
-                    | Q(categories__name__icontains=query)
-                    | Q(tags__name__icontains=query)
                 )
                 .distinct()
                 .filter(status="published")
