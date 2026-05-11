@@ -1,0 +1,122 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+    <div class="container">
+        <!-- Logo/Brand -->
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+            <div class="brand-logo">
+                <i class="fas fa-code"></i>
+            </div>
+            <span class="brand-text ms-2">{{ SITE_NAME }}</span>
+        </a>
+        
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'core:home' %}">
+                        <i class="fas fa-home me-1"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'core:about' %}">
+                        <i class="fas fa-user me-1"></i> About
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-project-diagram me-1"></i> Projects
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'portfolio:project_list' %}">All Projects</a></li>
+                        {% for category in nav_categories %}
+                        <li><a class="dropdown-item" href="{% url 'portfolio:category_projects' category.slug %}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:blog_list' %}">
+                        <i class="fas fa-blog me-1"></i> Blog
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact:contact' %}">
+                        <i class="fas fa-envelope me-1"></i> Contact
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Right Side Actions -->
+            <div class="navbar-actions d-flex align-items-center">
+                <!-- Search Button -->
+                <button class="btn btn-link nav-icon-btn me-2" data-bs-toggle="modal" data-bs-target="#searchModal">
+                    <i class="fas fa-search"></i>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button class="btn btn-link nav-icon-btn me-2" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                
+                <!-- Social Links -->
+                <div class="social-links d-none d-lg-flex me-3">
+                    {% if social_links %}
+                        {% for social in social_links %}
+                        <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer" 
+                           aria-label="{{ social.platform }}">
+                            <i class="{{ social.icon_class }}"></i>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- CTA Button -->
+                <a href="{% url 'contact:contact' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-paper-plane me-1"></i> Get In Touch
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search Portfolio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'core:search' %}" method="GET">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="q" placeholder="Search projects, blog posts..." 
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navbar Background (for glassmorphism effect) -->
+<div class="navbar-bg"></div>

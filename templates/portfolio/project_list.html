@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projects - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Browse my portfolio of Django and Python projects. See my work in web development, APIs, and backend applications.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold">My Projects</h1>
+                <p class="lead">Showcasing my work in Django, Python, and web development</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="filters-section py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="filters-container">
+                    <form method="GET" class="filters-form">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label for="search" class="form-label">Search</label>
+                                <input type="text" name="search" id="search" class="form-control" 
+                                       placeholder="Search projects..." value="{{ search_query }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="category" class="form-label">Category</label>
+                                <select name="category" id="category" class="form-select">
+                                    <option value="">All Categories</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.slug }}" 
+                                            {% if current_category == category.slug %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="skill" class="form-label">Skill</label>
+                                <select name="skill" id="skill" class="form-select">
+                                    <option value="">All Skills</option>
+                                    {% for skill in skills %}
+                                    <option value="{{ skill.slug }}" 
+                                            {% if current_skill == skill.slug %}selected{% endif %}>
+                                        {{ skill.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="status" class="form-label">Status</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+                                    <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="planned" {% if current_status == 'planned' %}selected{% endif %}>Planned</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="projects-section py-5">
+    <div class="container">
+        <!-- Results Count -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="results-info">
+                    <p class="mb-0">
+                        <strong>{{ projects.count }}</strong> project{{ projects.count|pluralize }} found
+                        {% if search_query or current_category or current_skill or current_status %}
+                        with filters applied
+                        <a href="{% url 'portfolio:project_list' %}" class="btn btn-sm btn-outline-secondary ms-2">
+                            Clear Filters
+                        </a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="row">
+            {% for project in projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="project-card card h-100">
+                    <div class="project-image-container">
+                        {% if project.featured_image %}
+                        <img src="{{ project.featured_image.url }}" class="card-img-top project-image" alt="{{ project.title }}">
+                        {% else %}
+                        <div class="card-img-top project-placeholder">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Project Status Badge -->
+                        <div class="project-status">
+                            {% if project.is_featured %}
+                            <span class="badge bg-warning">Featured</span>
+                            {% endif %}
+                            <span class="badge bg-{{ project.status|default:'secondary' }}">
+                                {{ project.get_status_display|default:"Completed" }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.short_description|default:project.description|truncatewords:20 }}</p>
+                        
+                        <!-- Project Details -->
+                        <div class="project-meta">
+                            {% if project.start_date %}
+                            <div class="meta-item">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ project.start_date|date:"M Y" }}
+                                {% if project.end_date %}
+                                - {{ project.end_date|date:"M Y" }}
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            
+                            {% if project.duration_weeks %}
+                            <div class="meta-item">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ project.duration_weeks }} weeks
+                            </div>
+                            {% endif %}
+                            
+                            {% if project.team_size %}
+                            <div class="meta-item">
+                                <i class="fas fa-users me-1"></i>
+                                {{ project.team_size }} team{{ project.team_size|pluralize }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Technologies -->
+                        <div class="project-tech">
+                            {% for tech in project.technologies.all|slice:":4" %}
+                            <span class="badge bg-secondary">{{ tech.name }}</span>
+                            {% endfor %}
+                            {% if project.technologies.all|length > 4 %}
+                            <span class="badge bg-outline-secondary">+{{ project.technologies.all|length|add:"-4" }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Categories -->
+                        <div class="project-categories mt-2">
+                            {% for category in project.categories.all|slice:":2" %}
+                            <span class="badge bg-info">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                        <div class="project-actions">
+                            <a href="{% url 'portfolio:project_detail' project.slug %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </a>
+                            
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github me-1"></i>GitHub
+                            </a>
+                            {% endif %}
+                            
+                            {% if project.live_url %}
+                            <a href="{{ project.live_url }}" class="btn btn-outline-success btn-sm" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt me-1"></i>Live Demo
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-lg-12">
+                <div class="no-results text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h3>No projects found</h3>
+                    <p class="text-muted">Try adjusting your filters or search terms.</p>
+                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary">
+                        Clear Filters
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <nav aria-label="Projects pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_skill %}&skill={{ current_skill }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_skill %}&skill={{ current_skill }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_skill %}&skill={{ current_skill }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4">
+                <h2 class="display-5 fw-bold">Project Statistics</h2>
+                <p class="lead">Overview of my development work</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card text-center">
+                    <div class="stat-number counter" data-target="{{ project_stats.total_projects }}">0</div>
+                    <div class="stat-label">Total Projects</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card text-center">
+                    <div class="stat-number counter" data-target="{{ project_stats.featured_projects }}">0</div>
+                    <div class="stat-label">Featured Projects</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card text-center">
+                    <div class="stat-number counter" data-target="{{ project_stats.in_progress }}">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card text-center">
+                    <div class="stat-number counter" data-target="{{ project_stats.total_categories }}">0</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects -->
+{% if featured_projects %}
+<section class="featured-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4">
+                <h2 class="display-5 fw-bold">Featured Projects</h2>
+                <p class="lead">Highlight of my best work</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="featured-project-card card h-100">
+                    {% if project.featured_image %}
+                    <img src="{{ project.featured_image.url }}" class="card-img-top" alt="{{ project.title }}">
+                    {% else %}
+                    <div class="card-img-top project-placeholder">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge bg-warning mb-2">Featured</span>
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.short_description|default:project.description|truncatewords:15 }}</p>
+                        <a href="{% url 'portfolio:project_detail' project.slug %}" class="btn btn-primary">
+                            View Project <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Hero */
+.page-hero {
+    background: var(--gradient-dark);
+    padding: 5rem 0 3rem;
+    color: white;
+    text-align: center;
+}
+
+/* Filters Section */
+.filters-section {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.filters-container {
+    background: var(--glass);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+/* Projects Section */
+.projects-section {
+    background: var(--bg-primary);
+}
+
+.results-info {
+    padding: 1rem 0;
+    color: var(--text-secondary);
+}
+
+.project-card {
+    transition: all var(--transition-normal);
+    overflow: hidden;
+    position: relative;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.project-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.project-image {
+    height: 200px;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+}
+
+.project-card:hover .project-image {
+    transform: scale(1.05);
+}
+
+.project-placeholder {
+    height: 200px;
+    background: var(--gradient-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--text-muted);
+}
+
+.project-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.project-meta {
+    margin: 1rem 0;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.meta-item i {
+    width: 16px;
+}
+
+.project-tech {
+    margin: 1rem 0;
+}
+
+.project-categories {
+    margin-top: 0.5rem;
+}
+
+.project-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.no-results {
+    padding: 3rem 0;
+}
+
+.no-results i {
+    margin-bottom: 1rem;
+}
+
+/* Statistics Section */
+.stats-section {
+    background: var(--bg-secondary);
+}
+
+.stat-card {
+    padding: 2rem;
+    background: var(--glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Featured Section */
+.featured-section {
+    background: var(--bg-primary);
+}
+
+.featured-project-card {
+    transition: all var(--transition-normal);
+}
+
+.featured-project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filters-form .row {
+        gap: 1rem;
+    }
+    
+    .project-actions {
+        justify-content: center;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .filters-container {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}

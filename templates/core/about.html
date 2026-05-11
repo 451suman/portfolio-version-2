@@ -1,0 +1,609 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Me - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Learn more about {{ profile.user.first_name|default:"me" }}, a professional Django developer with {{ profile.experience_years|default:"5" }} years of experience in building scalable web applications.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold">About Me</h1>
+                <p class="lead">Professional Django Developer & Backend Specialist</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="about-content py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4">
+                <div class="about-image text-center">
+                    {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.first_name }}" class="about-avatar">
+                    {% else %}
+                    <div class="about-avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Availability Status -->
+                    <div class="availability-status mt-4">
+                        {% if profile.is_available %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-circle me-2"></i>
+                            <strong>Available for Hire</strong>
+                            <p class="mb-0 mt-2">Currently accepting new projects and opportunities</p>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-circle me-2"></i>
+                            <strong>Currently Busy</strong>
+                            <p class="mb-0 mt-2">Not accepting new projects at the moment</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="contact-info mt-4">
+                        {% if profile.phone %}
+                        <div class="contact-item">
+                            <i class="fas fa-phone me-2"></i>
+                            <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a>
+                        </div>
+                        {% endif %}
+                        <div class="contact-item">
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:{{ SITE_EMAIL }}">{{ SITE_EMAIL }}</a>
+                        </div>
+                        {% if profile.website %}
+                        <div class="contact-item">
+                            <i class="fas fa-globe me-2"></i>
+                            <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="social-links mt-4">
+                        {% if social_links %}
+                            {% for social in social_links %}
+                            <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                <i class="{{ social.icon_class }}"></i>
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="about-details">
+                    <h2 class="mb-4">{{ profile.title|default:"Backend Developer" }}</h2>
+                    
+                    <div class="profession-titles mb-4">
+                        <h4 class="text-muted">Professional Titles</h4>
+                        <div class="titles-list">
+                            {% if profile.profession_titles %}
+                                {% for title in profile.profession_titles %}
+                                <span class="badge bg-primary me-2 mb-2">{{ title }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="badge bg-primary me-2 mb-2">Backend Developer</span>
+                                <span class="badge bg-primary me-2 mb-2">Django Developer</span>
+                                <span class="badge bg-primary me-2 mb-2">Python Developer</span>
+                                <span class="badge bg-primary me-2 mb-2">API Specialist</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="about-bio mb-4">
+                        <h4 class="mb-3">About Me</h4>
+                        <p>{{ profile.about_detailed|default:"I'm a passionate backend developer with over 5 years of experience in building scalable web applications using Django and Python. I specialize in creating robust APIs, optimizing database performance, and implementing secure authentication systems." }}</p>
+                        <p>{{ profile.skills_summary|default:"My expertise includes Django REST Framework, PostgreSQL, Redis, Docker, and modern cloud deployment strategies. I love solving complex problems and turning ideas into reality through clean, efficient code." }}</p>
+                    </div>
+                    
+                    <div class="work-preferences mb-4">
+                        <h4 class="mb-3">Work Preferences</h4>
+                        <div class="preference-item">
+                            <strong>Preferred Work:</strong> 
+                            <span class="badge bg-info">{{ profile.get_preferred_work_type_display|default:"Full-time" }}</span>
+                        </div>
+                        {% if profile.hourly_rate %}
+                        <div class="preference-item">
+                            <strong>Hourly Rate:</strong> 
+                            <span class="badge bg-success">${{ profile.hourly_rate }}/hour</span>
+                        </div>
+                        {% endif %}
+                        <div class="preference-item">
+                            <strong>Experience:</strong> 
+                            <span class="badge bg-primary">{{ profile.experience_years|default:"5" }} years</span>
+                        </div>
+                    </div>
+                    
+                    {% if profile.resume_file %}
+                    <div class="resume-download mb-4">
+                        <a href="{{ profile.resume_file.url }}" class="btn btn-primary btn-lg" download>
+                            <i class="fas fa-download me-2"></i>Download Resume
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="skills-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Technical Skills</h2>
+                <p class="lead">My expertise and proficiency levels</p>
+            </div>
+        </div>
+        
+        <!-- Skills by Level -->
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <h4 class="mb-4">Expert Level</h4>
+                {% for skill in expert_skills %}
+                <div class="skill-item mb-3">
+                    <div class="skill-header">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-percentage">{{ skill.percentage }}%</span>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-lg-6">
+                <h4 class="mb-4">Advanced Level</h4>
+                {% for skill in advanced_skills %}
+                <div class="skill-item mb-3">
+                    <div class="skill-header">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-percentage">{{ skill.percentage }}%</span>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                <h4 class="mb-4">Intermediate Level</h4>
+                {% for skill in intermediate_skills %}
+                <div class="skill-item mb-3">
+                    <div class="skill-header">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-percentage">{{ skill.percentage }}%</span>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-lg-6">
+                <h4 class="mb-4">Beginner Level</h4>
+                {% for skill in beginner_skills %}
+                <div class="skill-item mb-3">
+                    <div class="skill-header">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-percentage">{{ skill.percentage }}%</span>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- All Skills Grid -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <h4 class="mb-4 text-center">All Technologies</h4>
+                <div class="skills-grid">
+                    {% for skill in all_skills %}
+                    <div class="skill-card">
+                        <div class="skill-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <div class="skill-name">{{ skill.name }}</div>
+                        <div class="skill-level">{{ skill.get_level_display }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Timeline -->
+<section class="experience-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Professional Experience</h2>
+                <p class="lead">My career journey and milestones</p>
+            </div>
+        </div>
+        <div class="timeline">
+            {% for experience in experiences %}
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">
+                        {{ experience.start_date|date:"M Y" }} - {% if experience.is_current %}Present{% else %}{{ experience.end_date|date:"M Y" }}{% endif %}
+                    </div>
+                    <h4>{{ experience.position }}</h4>
+                    <h5>{{ experience.company }}</h5>
+                    <p class="timeline-location">{{ experience.location }}</p>
+                    <p>{{ experience.description }}</p>
+                    <div class="timeline-details">
+                        {% if experience.duration_weeks %}
+                        <span class="badge bg-info me-2">{{ experience.duration_weeks }} weeks</span>
+                        {% endif %}
+                        {% if experience.team_size %}
+                        <span class="badge bg-secondary me-2">{{ experience.team_size }} team members</span>
+                        {% endif %}
+                        {% if experience.employment_type %}
+                        <span class="badge bg-primary">{{ experience.get_employment_type_display }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-tech mt-3">
+                        <strong>Technologies:</strong>
+                        {% for tech in experience.technologies.all %}
+                        <span class="badge bg-secondary">{{ tech.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="display-5 fw-bold mb-4">Let's Work Together</h2>
+                <p class="lead mb-4">I'm always interested in hearing about new projects and opportunities.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'contact:contact' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-envelope me-2"></i>Contact Me
+                    </a>
+                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-project-diagram me-2"></i>View My Work
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Hero */
+.page-hero {
+    background: var(--gradient-dark);
+    padding: 5rem 0 3rem;
+    color: white;
+    text-align: center;
+}
+
+/* About Content */
+.about-content {
+    background: var(--bg-primary);
+}
+
+.about-avatar {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid var(--accent);
+    box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+}
+
+.about-avatar-placeholder {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: var(--gradient-neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    color: white;
+    margin: 0 auto;
+    box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+}
+
+.availability-status {
+    margin-top: 2rem;
+}
+
+.contact-info {
+    margin-top: 2rem;
+}
+
+.contact-item {
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.contact-item:hover {
+    color: var(--accent);
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.profession-titles h4 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.titles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.preference-item {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.preference-item strong {
+    color: var(--text-primary);
+    margin-right: 1rem;
+}
+
+/* Skills Section */
+.skills-section {
+    background: var(--bg-secondary);
+}
+
+.skill-item {
+    background: var(--glass);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.skill-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.skill-percentage {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.skill-progress {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.skill-progress-bar {
+    height: 100%;
+    background: var(--gradient-neon);
+    border-radius: 4px;
+    width: 0;
+    transition: width 2s ease-out;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.skill-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.skill-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.skill-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.skill-level {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Experience Section */
+.experience-section {
+    background: var(--bg-primary);
+}
+
+.timeline {
+    position: relative;
+    padding: 2rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.timeline-item:nth-child(even) {
+    animation: slideInRight 0.6s ease-out forwards;
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
+
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.timeline-content {
+    background: var(--glass);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    width: 45%;
+    margin-left: auto;
+}
+
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.timeline-date {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-location {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-details {
+    margin-bottom: 1rem;
+}
+
+.timeline-tech {
+    margin-top: 1rem;
+}
+
+.timeline-tech strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: var(--gradient-dark);
+    color: white;
+    padding: 5rem 0;
+}
+
+.cta-buttons {
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .about-avatar, .about-avatar-placeholder {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .timeline::before {
+        left: 20px;
+    }
+    
+    .timeline-dot {
+        left: 20px;
+    }
+    
+    .timeline-content {
+        width: calc(100% - 60px);
+        margin-left: 60px !important;
+    }
+    
+    .skills-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .cta-buttons .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

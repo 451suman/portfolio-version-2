@@ -1,0 +1,794 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ post.excerpt|default:post.content|striptags|truncatewords:30 }}{% endblock %}
+{% block og_image %}{% if post.featured_image %}{{ post.featured_image.url }}{% else %}{% static 'images/og-image.jpg' %}{% endif %}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold">{{ post.title }}</h1>
+                <p class="lead">{{ post.excerpt|default:post.content|striptags|truncatewords:20 }}</p>
+                <div class="post-hero-meta">
+                    <span class="badge bg-primary me-2">
+                        <i class="fas fa-user me-1"></i>
+                        {{ post.author.get_full_name|default:post.author.username }}
+                    </span>
+                    <span class="badge bg-info me-2">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ post.published_at|date:"M d, Y" }}
+                    </span>
+                    <span class="badge bg-secondary me-2">
+                        <i class="fas fa-clock me-1"></i>
+                        {{ post.reading_time }} min read
+                    </span>
+                    {% if post.is_featured %}
+                    <span class="badge bg-warning">Featured</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Post Content -->
+<section class="blog-post-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Featured Image -->
+                {% if post.featured_image %}
+                <div class="post-featured-image mb-5">
+                    <img src="{{ post.featured_image.url }}" class="img-fluid rounded" alt="{{ post.title }}">
+                </div>
+                {% endif %}
+
+                <!-- Post Content -->
+                <div class="post-content">
+                    <div class="post-body">
+                        {{ post.content|safe }}
+                    </div>
+                </div>
+
+                <!-- Post Categories & Tags -->
+                <div class="post-taxonomy mb-5">
+                    <div class="categories-tags">
+                        <div class="post-categories mb-3">
+                            <strong>Categories:</strong>
+                            {% for category in post.categories.all %}
+                            <a href="{% url 'blog:category_posts' category.slug %}" class="badge bg-info me-2">
+                                {{ category.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <div class="post-tags">
+                            <strong>Tags:</strong>
+                            {% for tag in post.tags.all %}
+                            <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-secondary me-2">
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Stats -->
+                <div class="post-stats mb-5">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ post.view_count }}</div>
+                            <div class="stat-label">Views</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ post.like_count }}</div>
+                            <div class="stat-label">Likes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ post.comment_count }}</div>
+                            <div class="stat-label">Comments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share Buttons -->
+                <div class="share-section mb-5">
+                    <h4>Share this post</h4>
+                    <div class="share-buttons">
+                        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}" 
+                           class="btn btn-outline-primary me-2" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-twitter me-2"></i>Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                           class="btn btn-outline-info me-2" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-linkedin me-2"></i>LinkedIn
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                           class="btn btn-outline-primary me-2" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-facebook me-2"></i>Facebook
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="copyToClipboard()">
+                            <i class="fas fa-link me-2"></i>Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h3>Comments ({{ post.comment_count }})</h3>
+                    
+                    <!-- Comment Form -->
+                    <div class="comment-form mb-5">
+                        <h4>Leave a Comment</h4>
+                        <form action="{% url 'blog:add_comment' post.slug %}" method="POST" class="comment-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ comment_form.name.id_for_label }}" class="form-label">Name *</label>
+                                    {{ comment_form.name }}
+                                    {% if comment_form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.name.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ comment_form.email.id_for_label }}" class="form-label">Email *</label>
+                                    {{ comment_form.email }}
+                                    {% if comment_form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.email.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ comment_form.website.id_for_label }}" class="form-label">Website</label>
+                                    {{ comment_form.website }}
+                                    {% if comment_form.website.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.website.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ comment_form.content.id_for_label }}" class="form-label">Comment *</label>
+                                {{ comment_form.content }}
+                                {% if comment_form.content.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ comment_form.content.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Post Comment
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Existing Comments -->
+                    <div class="existing-comments">
+                        {% for comment in comments %}
+                        <div class="comment">
+                            <div class="comment-header">
+                                <div class="comment-author">
+                                    {% if comment.website %}
+                                    <a href="{{ comment.website }}" target="_blank" rel="noopener noreferrer">
+                                        {{ comment.name }}
+                                    </a>
+                                    {% else %}
+                                    {{ comment.name }}
+                                    {% endif %}
+                                </div>
+                                <div class="comment-date">
+                                    {{ comment.created_at|date:"M d, Y H:i" }}
+                                </div>
+                            </div>
+                            <div class="comment-content">
+                                {{ comment.content|linebreaks }}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="no-comments">
+                            <p>No comments yet. Be the first to comment!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <!-- Author Info -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">About the Author</h4>
+                        <div class="author-info">
+                            {% if post.author.avatar %}
+                            <img src="{{ post.author.avatar.url }}" alt="{{ post.author.get_full_name|default:post.author.username }}" class="author-avatar">
+                            {% else %}
+                            <div class="author-avatar-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            {% endif %}
+                            <div class="author-details">
+                                <h5>{{ post.author.get_full_name|default:post.author.username }}</h5>
+                                <p>{{ post.author.bio|default:"Django developer and tech enthusiast." }}</p>
+                                {% if post.author.website %}
+                                <a href="{{ post.author.website }}" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-globe me-2"></i>Website
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table of Contents -->
+                    {% if table_of_contents %}
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Table of Contents</h4>
+                        <div class="table-of-contents">
+                            {% for item in table_of_contents %}
+                            <a href="#{{ item.anchor }}" class="toc-item">{{ item.title }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Related Posts -->
+                    {% if related_posts %}
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Related Posts</h4>
+                        <div class="related-posts">
+                            {% for related in related_posts %}
+                            <div class="related-post">
+                                {% if related.featured_image %}
+                                <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" class="related-post-image">
+                                {% else %}
+                                <div class="related-post-placeholder">
+                                    <i class="fas fa-blog"></i>
+                                </div>
+                                {% endif %}
+                                <div class="related-post-content">
+                                    <h6>
+                                        <a href="{% url 'blog:post_detail' related.slug %}">{{ related.title }}</a>
+                                    </h6>
+                                    <div class="related-post-meta">
+                                        <span class="post-date">{{ related.published_at|date:"M d" }}</span>
+                                        <span class="post-reading-time">{{ related.reading_time }} min</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Categories -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Categories</h4>
+                        <div class="categories-list">
+                            {% for category in categories %}
+                            <a href="{% url 'blog:category_posts' category.slug %}" class="category-item">
+                                {{ category.name }}
+                                <span class="category-count">({{ category.blog_posts.count }})</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Popular Tags</h4>
+                        <div class="tags-cloud">
+                            {% for tag in tags|slice:":10" %}
+                            <a href="{% url 'blog:tag_posts' tag.slug %}" class="tag-cloud-item">
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="post-navigation mt-5">
+            <div class="row">
+                <div class="col-6">
+                    {% if previous_post %}
+                    <a href="{% url 'blog:post_detail' previous_post.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-chevron-left me-2"></i>{{ previous_post.title }}
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="col-6 text-end">
+                    {% if next_post %}
+                    <a href="{% url 'blog:post_detail' next_post.slug %}" class="btn btn-outline-primary">
+                        {{ next_post.title }}<i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back to Blog -->
+<section class="back-to-blog py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Blog
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Hero */
+.page-hero {
+    background: var(--gradient-dark);
+    padding: 5rem 0 3rem;
+    color: white;
+    text-align: center;
+}
+
+.post-hero-meta {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Blog Post Content */
+.blog-post-content {
+    background: var(--bg-primary);
+}
+
+.post-featured-image img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.post-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.post-body h2, .post-body h3, .post-body h4 {
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.post-body h2:first-child {
+    margin-top: 0;
+}
+
+.post-body p {
+    margin-bottom: 1.5rem;
+}
+
+.post-body ul, .post-body ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+}
+
+.post-body li {
+    margin-bottom: 0.5rem;
+}
+
+.post-body blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.post-body pre {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.post-body code {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-family: 'Courier New', monospace;
+}
+
+/* Taxonomy */
+.categories-tags {
+    margin-bottom: 1rem;
+}
+
+.post-categories, .post-tags {
+    margin-bottom: 0.5rem;
+}
+
+.post-categories strong, .post-tags strong {
+    color: var(--text-primary);
+    margin-right: 1rem;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* Share Section */
+.share-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Comments */
+.comment-form .form-control,
+.comment-form .form-select {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.comment-form .form-control:focus,
+.comment-form .form-select:focus {
+    background: var(--glass);
+    border-color: var(--accent);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+}
+
+.comment {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.comment-author a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.comment-author a:hover {
+    color: var(--accent-hover);
+}
+
+.comment-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.comment-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+/* Sidebar */
+.blog-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.sidebar-section {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.author-info {
+    display: flex;
+    gap: 1rem;
+}
+
+.author-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.author-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.author-details h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.author-details p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.table-of-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toc-item {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    padding: 0.25rem 0;
+}
+
+.toc-item:hover {
+    color: var(--accent);
+}
+
+.related-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.related-post {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+.related-post:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.related-post-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+}
+
+.related-post-placeholder {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+}
+
+.related-post-content {
+    flex: 1;
+}
+
+.related-post-content h6 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.related-post-content h6 a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.related-post-content h6 a:hover {
+    color: var(--accent);
+}
+
+.related-post-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.category-item:hover {
+    color: var(--accent);
+    transform: translateX(5px);
+}
+
+.category-count {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-cloud-item {
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.tag-cloud-item:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Navigation */
+.post-navigation {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+}
+
+.back-to-blog {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .blog-sidebar {
+        position: relative;
+        top: 0;
+    }
+    
+    .post-hero-meta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+    }
+    
+    .share-buttons .btn {
+        width: 100%;
+    }
+    
+    .author-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .related-post {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .related-post-image,
+    .related-post-placeholder {
+        width: 100%;
+        height: 120px;
+    }
+    
+    .post-navigation .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Post link copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+
+// Smooth scroll for table of contents
+document.addEventListener('DOMContentLoaded', function() {
+    const tocLinks = document.querySelectorAll('.toc-item');
+    tocLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

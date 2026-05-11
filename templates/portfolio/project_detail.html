@@ -1,0 +1,600 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ project.short_description|default:project.description|truncatewords:30 }}{% endblock %}
+{% block og_image %}{% if project.featured_image %}{{ project.featured_image.url }}{% else %}{% static 'images/og-image.jpg' %}{% endif %}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold">{{ project.title }}</h1>
+                <p class="lead">{{ project.short_description|default:project.description|truncatewords:20 }}</p>
+                <div class="project-hero-meta">
+                    {% if project.start_date %}
+                    <span class="badge bg-primary me-2">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ project.start_date|date:"M Y" }}
+                        {% if project.end_date %}- {{ project.end_date|date:"M Y" }}{% endif %}
+                    </span>
+                    {% endif %}
+                    {% if project.duration_weeks %}
+                    <span class="badge bg-info me-2">
+                        <i class="fas fa-clock me-1"></i>
+                        {{ project.duration_weeks }} weeks
+                    </span>
+                    {% endif %}
+                    {% if project.team_size %}
+                    <span class="badge bg-secondary me-2">
+                        <i class="fas fa-users me-1"></i>
+                        {{ project.team_size }} team{{ project.team_size|pluralize }}
+                    </span>
+                    {% endif %}
+                    <span class="badge bg-{{ project.status|default:'secondary' }}">
+                        {{ project.get_status_display|default:"Completed" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="project-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Project Gallery -->
+                {% if project_images %}
+                <div class="project-gallery mb-5">
+                    <h3 class="mb-4">Project Gallery</h3>
+                    <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for image in project_images %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.title|default:project.title }}">
+                                {% if image.title or image.description %}
+                                <div class="carousel-caption">
+                                    {% if image.title %}<h5>{{ image.title }}</h5>{% endif %}
+                                    {% if image.description %}<p>{{ image.description }}</p>{% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if project_images|length > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% elif project.featured_image %}
+                <div class="project-featured-image mb-5">
+                    <img src="{{ project.featured_image.url }}" class="img-fluid rounded" alt="{{ project.title }}">
+                </div>
+                {% endif %}
+
+                <!-- Project Description -->
+                <div class="project-description mb-5">
+                    <h3 class="mb-4">About This Project</h3>
+                    <div class="project-description-content">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Challenges -->
+                {% if project.challenges %}
+                <div class="project-challenges mb-5">
+                    <h3 class="mb-4">Challenges & Solutions</h3>
+                    <div class="challenges-content">
+                        {{ project.challenges|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Architecture -->
+                {% if project.architecture %}
+                <div class="project-architecture mb-5">
+                    <h3 class="mb-4">Technical Architecture</h3>
+                    <div class="architecture-content">
+                        {{ project.architecture|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Technologies -->
+                <div class="project-technologies mb-5">
+                    <h3 class="mb-4">Technologies Used</h3>
+                    <div class="tech-grid">
+                        {% for tech in project.technologies.all %}
+                        <div class="tech-item">
+                            <div class="tech-icon">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <div class="tech-name">{{ tech.name }}</div>
+                            <div class="tech-level">{{ tech.get_level_display }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Categories & Tags -->
+                <div class="project-taxonomy mb-5">
+                    <h3 class="mb-4">Categories & Tags</h3>
+                    <div class="categories-list mb-3">
+                        <strong>Categories:</strong>
+                        {% for category in project.categories.all %}
+                        <a href="{% url 'portfolio:category_projects' category.slug %}" class="badge bg-info me-2">
+                            {{ category.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <div class="tags-list">
+                        <strong>Tags:</strong>
+                        {% for tag in project.tags.all %}
+                        <a href="{% url 'portfolio:tag_projects' tag.slug %}" class="badge bg-secondary me-2">
+                            {{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Project Stats -->
+                <div class="project-stats mb-5">
+                    <h3 class="mb-4">Project Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ project.view_count }}</div>
+                            <div class="stat-label">Views</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ project.like_count }}</div>
+                            <div class="stat-label">Likes</div>
+                        </div>
+                        {% if project.duration_weeks %}
+                        <div class="stat-item">
+                            <div class="stat-value">{{ project.duration_weeks }}</div>
+                            <div class="stat-label">Weeks Duration</div>
+                        </div>
+                        {% endif %}
+                        {% if project.team_size %}
+                        <div class="stat-item">
+                            <div class="stat-value">{{ project.team_size }}</div>
+                            <div class="stat-label">Team Size</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="project-sidebar">
+                    <!-- Project Actions -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Project Actions</h4>
+                        <div class="project-actions">
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" class="btn btn-outline-dark w-100 mb-2" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github me-2"></i>View on GitHub
+                            </a>
+                            {% endif %}
+                            {% if project.live_url %}
+                            <a href="{{ project.live_url }}" class="btn btn-success w-100 mb-2" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt me-2"></i>Live Demo
+                            </a>
+                            {% endif %}
+                            {% if project.demo_url %}
+                            <a href="{{ project.demo_url }}" class="btn btn-primary w-100 mb-2" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-play me-2"></i>View Demo
+                            </a>
+                            {% endif %}
+                            <button class="btn btn-outline-secondary w-100" onclick="window.print()">
+                                <i class="fas fa-print me-2"></i>Print Project
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Project Details -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Project Details</h4>
+                        <div class="project-details-list">
+                            {% if project.client_name %}
+                            <div class="detail-item">
+                                <strong>Client:</strong> {{ project.client_name }}
+                            </div>
+                            {% endif %}
+                            {% if project.budget %}
+                            <div class="detail-item">
+                                <strong>Budget:</strong> ${{ project.budget }}
+                            </div>
+                            {% endif %}
+                            {% if project.timeline %}
+                            <div class="detail-item">
+                                <strong>Timeline:</strong> {{ project.timeline }}
+                            </div>
+                            {% endif %}
+                            <div class="detail-item">
+                                <strong>Status:</strong> 
+                                <span class="badge bg-{{ project.status|default:'secondary' }}">
+                                    {{ project.get_status_display|default:"Completed" }}
+                                </span>
+                            </div>
+                            {% if project.is_open_source %}
+                            <div class="detail-item">
+                                <strong>License:</strong> 
+                                <span class="badge bg-success">Open Source</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Share Project -->
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Share Project</h4>
+                        <div class="share-buttons">
+                            <a href="https://twitter.com/intent/tweet?text={{ project.title }}&url={{ request.build_absolute_uri }}" 
+                               class="btn btn-outline-primary w-100 mb-2" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-twitter me-2"></i>Share on Twitter
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                               class="btn btn-outline-info w-100 mb-2" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-linkedin me-2"></i>Share on LinkedIn
+                            </a>
+                            <button class="btn btn-outline-secondary w-100" onclick="copyToClipboard()">
+                                <i class="fas fa-link me-2"></i>Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Related Projects -->
+                    {% if related_projects %}
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Related Projects</h4>
+                        <div class="related-projects">
+                            {% for related in related_projects %}
+                            <div class="related-project">
+                                {% if related.featured_image %}
+                                <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" class="related-project-image">
+                                {% else %}
+                                <div class="related-project-placeholder">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                {% endif %}
+                                <div class="related-project-info">
+                                    <h6>{{ related.title }}</h6>
+                                    <a href="{% url 'portfolio:project_detail' related.slug %}" class="btn btn-sm btn-primary">
+                                        View Project
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="project-navigation mt-5">
+            <div class="row">
+                <div class="col-6">
+                    {% if previous_project %}
+                    <a href="{% url 'portfolio:project_detail' previous_project.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-chevron-left me-2"></i>{{ previous_project.title }}
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="col-6 text-end">
+                    {% if next_project %}
+                    <a href="{% url 'portfolio:project_detail' next_project.slug %}" class="btn btn-outline-primary">
+                        {{ next_project.title }}<i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back to Projects -->
+<section class="back-to-projects py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Back to All Projects
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Hero */
+.page-hero {
+    background: var(--gradient-dark);
+    padding: 5rem 0 3rem;
+    color: white;
+    text-align: center;
+}
+
+.project-hero-meta {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Project Content */
+.project-content {
+    background: var(--bg-primary);
+}
+
+.project-gallery img {
+    border-radius: var(--radius-lg);
+}
+
+.project-featured-image img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.project-description-content,
+.challenges-content,
+.architecture-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.tech-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+}
+
+.tech-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.tech-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.tech-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.tech-level {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.categories-list,
+.tags-list {
+    margin-bottom: 1rem;
+}
+
+.categories-list strong,
+.tags-list strong {
+    color: var(--text-primary);
+    margin-right: 1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Sidebar */
+.project-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.sidebar-section {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.project-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item strong {
+    color: var(--text-primary);
+}
+
+.share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.related-projects {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.related-project {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+.related-project:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.related-project-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+}
+
+.related-project-placeholder {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+}
+
+.related-project-info {
+    flex: 1;
+}
+
+.related-project-info h6 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* Navigation */
+.project-navigation {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+}
+
+.back-to-projects {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .project-sidebar {
+        position: relative;
+        top: 0;
+    }
+    
+    .tech-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .project-hero-meta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .related-project {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .project-navigation .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Project link copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+</script>
+{% endblock %}

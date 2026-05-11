@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results - {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Search for projects, blog posts, and content across {{ SITE_NAME }} portfolio.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold">Search Results</h1>
+                <p class="lead">
+                    {% if query %}
+                    Found {{ total_results }} result{{ total_results|pluralize }} for "{{ query }}"
+                    {% else %}
+                    Search across projects, blog posts, and more
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Form -->
+<section class="search-form-section py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <form action="{% url 'core:search' %}" method="GET" class="search-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control form-control-lg" 
+                               placeholder="Search projects, blog posts..." value="{{ query }}">
+                        <button class="btn btn-primary btn-lg" type="submit">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Results -->
+<section class="search-results py-5">
+    <div class="container">
+        {% if query %}
+            <!-- Projects Results -->
+            {% if projects %}
+            <div class="results-section mb-5">
+                <h3 class="results-title">
+                    <i class="fas fa-project-diagram me-2"></i>
+                    Projects ({{ projects_count }})
+                </h3>
+                <div class="row">
+                    {% for project in projects %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="search-result-card card h-100">
+                            {% if project.featured_image %}
+                            <img src="{{ project.featured_image.url }}" class="card-img-top" alt="{{ project.title }}">
+                            {% else %}
+                            <div class="card-img-top search-placeholder">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <span class="result-type badge bg-primary">Project</span>
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">{{ project.short_description|default:project.description|truncatewords:20 }}</p>
+                                <div class="result-meta">
+                                    <span class="badge bg-secondary">{{ project.get_status_display|default:"Completed" }}</span>
+                                    {% for tech in project.technologies.all|slice:":2" %}
+                                    <span class="badge bg-info">{{ tech.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'portfolio:project_detail' project.slug %}" class="btn btn-primary btn-sm">
+                                    View Project <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Blog Posts Results -->
+            {% if blog_posts %}
+            <div class="results-section mb-5">
+                <h3 class="results-title">
+                    <i class="fas fa-blog me-2"></i>
+                    Blog Posts ({{ blog_posts_count }})
+                </h3>
+                <div class="row">
+                    {% for post in blog_posts %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="search-result-card card h-100">
+                            {% if post.featured_image %}
+                            <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                            {% else %}
+                            <div class="card-img-top search-placeholder">
+                                <i class="fas fa-blog"></i>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <span class="result-type badge bg-success">Blog Post</span>
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.excerpt|default:post.content|striptags|truncatewords:15 }}</p>
+                                <div class="result-meta">
+                                    <span class="text-muted">{{ post.published_at|date:"M d, Y" }}</span>
+                                    <span class="text-muted">{{ post.reading_time }} min read</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-success btn-sm">
+                                    Read Post <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- No Results -->
+            {% if not projects and not blog_posts %}
+            <div class="no-results text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h3>No results found</h3>
+                <p class="text-muted">No projects or blog posts found matching "{{ query }}".</p>
+                <div class="suggestions">
+                    <h5 class="mb-3">Try:</h5>
+                    <ul class="list-unstyled">
+                        <li>Checking your spelling</li>
+                        <li>Using more general terms</li>
+                        <li>Browsing our <a href="{% url 'portfolio:project_list' %}">projects</a> or <a href="{% url 'blog:blog_list' %}">blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Search Suggestions -->
+            <div class="search-suggestions text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h3>What would you like to search for?</h3>
+                <p class="text-muted mb-4">Try searching for projects, blog posts, or technologies.</p>
+                
+                <div class="popular-searches">
+                    <h5 class="mb-3">Popular Searches:</h5>
+                    <div class="search-tags">
+                        <a href="{% url 'core:search' %}?q=Django" class="search-tag">Django</a>
+                        <a href="{% url 'core:search' %}?q=Python" class="search-tag">Python</a>
+                        <a href="{% url 'core:search' %}?q=API" class="search-tag">API</a>
+                        <a href="{% url 'core:search' %}?q=Web Development" class="search-tag">Web Development</a>
+                        <a href="{% url 'core:search' %}?q=Backend" class="search-tag">Backend</a>
+                        <a href="{% url 'core:search' %}?q=Database" class="search-tag">Database</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Quick Links -->
+{% if query %}
+<section class="quick-links py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <p class="mb-3">Not finding what you're looking for?</p>
+                <div class="quick-nav">
+                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-project-diagram me-2"></i>All Projects
+                    </a>
+                    <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-success me-2">
+                        <i class="fas fa-blog me-2"></i>All Blog Posts
+                    </a>
+                    <a href="{% url 'core:about' %}" class="btn btn-outline-info">
+                        <i class="fas fa-user me-2"></i>About Me
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Hero */
+.page-hero {
+    background: var(--gradient-dark);
+    padding: 5rem 0 3rem;
+    color: white;
+    text-align: center;
+}
+
+/* Search Form Section */
+.search-form-section {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.search-form {
+    background: var(--glass);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+/* Search Results */
+.search-results {
+    background: var(--bg-primary);
+}
+
+.results-section {
+    margin-bottom: 3rem;
+}
+
+.results-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.search-result-card {
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.search-result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.result-type {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.8rem;
+}
+
+.search-placeholder {
+    height: 200px;
+    background: var(--gradient-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--text-muted);
+}
+
+.result-meta {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.result-meta span {
+    font-size: 0.8rem;
+}
+
+/* No Results */
+.no-results, .search-suggestions {
+    padding: 3rem 0;
+}
+
+.suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.suggestions li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.suggestions a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.suggestions a:hover {
+    color: var(--accent-hover);
+}
+
+/* Popular Searches */
+.popular-searches {
+    margin-top: 2rem;
+}
+
+.search-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.search-tag {
+    padding: 0.5rem 1rem;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.search-tag:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Quick Links */
+.quick-links {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+}
+
+.quick-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-tags {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .quick-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .quick-nav .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .result-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+</style>
+{% endblock %}

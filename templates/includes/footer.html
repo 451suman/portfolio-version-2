@@ -1,0 +1,125 @@
+{% load static %}
+<footer class="footer">
+    <div class="container">
+        <!-- Footer Main Content -->
+        <div class="footer-main">
+            <div class="row">
+                <!-- About Section -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <div class="footer-about">
+                        <div class="footer-brand d-flex align-items-center mb-3">
+                            <div class="brand-logo">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <span class="brand-text ms-2">{{ SITE_NAME }}</span>
+                        </div>
+                        <p class="footer-description">
+                            {{ SITE_DESCRIPTION }}
+                        </p>
+                        {% if profile %}
+                        <p class="footer-bio">
+                            {{ profile.about_short|default:"Passionate Django developer creating amazing web applications." }}
+                        </p>
+                        {% endif %}
+                        
+                        <!-- Social Links -->
+                        <div class="footer-social">
+                            {% if social_links %}
+                                {% for social in social_links %}
+                                <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer" 
+                                   aria-label="{{ social.platform }}">
+                                    <i class="{{ social.icon_class }}"></i>
+                                </a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <div class="footer-links">
+                        <h5 class="footer-title">Quick Links</h5>
+                        <ul class="footer-nav">
+                            <li><a href="{% url 'core:home' %}">Home</a></li>
+                            <li><a href="{% url 'core:about' %}">About</a></li>
+                            <li><a href="{% url 'portfolio:project_list' %}">Projects</a></li>
+                            <li><a href="{% url 'blog:blog_list' %}">Blog</a></li>
+                            <li><a href="{% url 'contact:contact' %}">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Categories -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <div class="footer-links">
+                        <h5 class="footer-title">Categories</h5>
+                        <ul class="footer-nav">
+                            {% for category in nav_categories|slice:":5" %}
+                            <li>
+                                <a href="{% url 'portfolio:category_projects' category.slug %}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                            <li><a href="{% url 'portfolio:project_list' %}">View All</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-newsletter">
+                        <h5 class="footer-title">Stay Updated</h5>
+                        <p class="footer-description">
+                            Subscribe to my newsletter for the latest projects and tech insights.
+                        </p>
+                        <form action="{% url 'contact:newsletter' %}" method="POST" class="newsletter-form">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="email" name="email" class="form-control" placeholder="Your email" required>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <p class="newsletter-note">
+                            <i class="fas fa-lock me-1"></i> No spam, unsubscribe anytime.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="copyright">
+                        © {% now "Y" %} {{ SITE_NAME }}. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="footer-bottom-links">
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                        <a href="#" class="footer-link">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Footer Background Pattern -->
+<div class="footer-pattern"></div>
