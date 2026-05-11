@@ -69,6 +69,9 @@ class ProjectAdmin(admin.ModelAdmin):
         "status",
         "is_featured",
         "is_open_source",
+        "show_github_button",
+        "show_live_button",
+        "show_demo_button",
         "start_date",
         "view_count",
         "created_at",
@@ -77,10 +80,20 @@ class ProjectAdmin(admin.ModelAdmin):
         "status",
         "is_featured",
         "is_open_source",
+        "show_github_button",
+        "show_live_button",
+        "show_demo_button",
         "start_date",
     )
     search_fields = ("title", "description", "short_description")
-    list_editable = ("status", "is_featured", "is_open_source")
+    list_editable = (
+        "status",
+        "is_featured",
+        "is_open_source",
+        "show_github_button",
+        "show_live_button",
+        "show_demo_button",
+    )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("technologies",)
     inlines = [ProjectImageInline]
@@ -95,6 +108,10 @@ class ProjectAdmin(admin.ModelAdmin):
         ("Description", {"fields": ("short_description", "description")}),
         ("Media", {"fields": ("featured_image",)}),
         ("Links", {"fields": ("github_url", "live_url", "demo_url")}),
+        (
+            "Display Controls",
+            {"fields": ("show_github_button", "show_live_button", "show_demo_button")},
+        ),
         (
             "Project Details",
             {
