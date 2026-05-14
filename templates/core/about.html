@@ -30,23 +30,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     {% endif %}
-                    
-                    <!-- Availability Status -->
-                    <div class="availability-status mt-4">
-                        {% if profile.is_available %}
-                        <div class="alert alert-success">
-                            <i class="fas fa-circle me-2"></i>
-                            <strong>Available for Hire</strong>
-                            <p class="mb-0 mt-2">Currently accepting new projects and opportunities</p>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-info">
-                            <i class="fas fa-circle me-2"></i>
-                            <strong>Currently Busy</strong>
-                            <p class="mb-0 mt-2">Not accepting new projects at the moment</p>
-                        </div>
-                        {% endif %}
-                    </div>
+                   
                     
                     <!-- Contact Info -->
                     <div class="contact-info mt-4">
@@ -161,7 +145,7 @@
         <!-- Skills by Level -->
         <div class="row mb-5">
             <div class="col-lg-6">
-                <h4 class="mb-4">Expert Level</h4>
+                <!-- <h4 class="mb-4">Expert Level</h4> -->
                 {% for skill in expert_skills %}
                 <div class="skill-item mb-3">
                     <div class="skill-header">
@@ -174,52 +158,10 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="col-lg-6">
-                <h4 class="mb-4">Advanced Level</h4>
-                {% for skill in advanced_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            
         </div>
         
-        <div class="row">
-            <div class="col-lg-6">
-                <h4 class="mb-4">Intermediate Level</h4>
-                {% for skill in intermediate_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="col-lg-6">
-                <h4 class="mb-4">Beginner Level</h4>
-                {% for skill in beginner_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+       
         
         <!-- All Skills Grid -->
         <div class="row mt-5">

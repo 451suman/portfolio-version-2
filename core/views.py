@@ -21,6 +21,7 @@ class HomePageView(TemplateView):
         # Get profile data
         try:
             profile = Profile.objects.select_related("user").first()
+            breakpoint()
             if profile:
                 context["profile"] = profile
                 context["social_links"] = profile.social_links.filter(
@@ -121,7 +122,7 @@ class AboutView(TemplateView):
         ).order_by("-is_current", "-start_date")
 
         # Skills by level
-        context["expert_skills"] = Skill.objects.filter(level="expert").order_by(
+        context["expert_skills"] = Skill.objects.all().order_by(
             "order", "name"
         )
         context["advanced_skills"] = Skill.objects.filter(level="advanced").order_by(
