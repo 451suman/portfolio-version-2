@@ -65,7 +65,7 @@ class Profile(models.Model):
 
 
 class SocialLink(models.Model):
-    profile = models.ForeignKey(
+    profile = models.OneToOneField(
         Profile, on_delete=models.CASCADE, related_name="social_links"
     )
     platform = models.CharField(max_length=50)

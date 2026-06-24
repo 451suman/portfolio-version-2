@@ -21,7 +21,6 @@ class HomePageView(TemplateView):
         # Get profile data
         try:
             profile = Profile.objects.select_related("user").first()
-            breakpoint()
             if profile:
                 context["profile"] = profile
                 context["social_links"] = profile.social_links.filter(

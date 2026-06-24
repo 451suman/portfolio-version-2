@@ -37,17 +37,6 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
         (
-            "Contact info",
-            {
-                "fields": (
-                    "website",
-                    "github_username",
-                    "linkedin_url",
-                    "twitter_username",
-                )
-            },
-        ),
-        (
             "Permissions",
             {
                 "fields": (
