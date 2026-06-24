@@ -154,12 +154,12 @@ MESSAGE_TAGS = {
 }
 
 # Site Settings
-SITE_NAME = "Developer Portfolio"
-SITE_DESCRIPTION = "Professional Django Developer Portfolio"
-SITE_AUTHOR = "John Doe"
-SITE_EMAIL = "contact@example.com"
-SITE_PHONE = "+1234567890"
-SITE_ADDRESS = "San Francisco, CA"
-GITHUB_USERNAME = "johndoe"
-LINKEDIN_URL = "https://linkedin.com/in/johndoe"
-TWITTER_USERNAME = "johndoe"
+SITE_NAME = "getting from .env file Developer Portfolio"
+SITE_DESCRIPTION = "getting from .env file Professional Django Developer Portfolio"
+SITE_AUTHOR = "getting from .env file John Doe"
+SITE_EMAIL = "getting from .env file contact@example.com change it in production"
+SITE_PHONE = "getting from .env file +1234567890"
+SITE_ADDRESS = "getting from .env file San Francisco, CA"
+GITHUB_USERNAME = "getting from .env file johndoe"
+LINKEDIN_URL = "getting from .env file https://linkedin.com/in/johndoe"
+TWITTER_USERNAME = "getting from .env file johndoe"

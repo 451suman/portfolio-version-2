@@ -60,16 +60,7 @@
                                 <i class="{{ social.icon_class }}"></i>
                             </a>
                             {% endfor %}
-                        {% else %}
-                            <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-twitter"></i>
-                            </a>
+                        
                         {% endif %}
                     </div>
                 </div>
@@ -80,7 +71,7 @@
                     <h2 class="mb-4">{{ profile.title|default:"Backend Developer" }}</h2>
                     
                     <div class="profession-titles mb-4">
-                        <h4 class="text-muted">Professional Titles</h4>
+                        <h4 class="">Professional Titles</h4>
                         <div class="titles-list">
                             {% if profile.profession_titles %}
                                 {% for title in profile.profession_titles %}
