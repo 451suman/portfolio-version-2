@@ -37,14 +37,14 @@
                         <i class="fas fa-envelope me-2"></i>Contact Me
                     </a>
                     {% if profile.resume_file %}
-                    <a href="{{ profile.resume_file.url }}" class="btn btn-outline-secondary btn-lg" download>
+                    <a href="{{ profile.resume_file.url }}" class="btn btn-outline-primary btn-lg me-3 "download>
                         <i class="fas fa-download me-2"></i>Download Resume
                     </a>
                     {% endif %}
                 </div>
                 
                 <!-- Social Icons -->
-                <div class="hero-social mt-4">
+                <div class="hero-social mt-4 ">
                     {% if social_links %}
                         {% for social in social_links %}
                         <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer">
