@@ -72,8 +72,8 @@
             <div class="col-lg-6 hero-image-section">
                 <!-- Developer Image -->
                 <div class="hero-image-container">
-                    {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.first_name }}" class="hero-image">
+                    {% if avatar %}
+                    <img src="{{ avatar.url }}" alt="{{ profile.user.first_name }}" class="hero-image">
                     {% else %}
                     <div class="hero-avatar-placeholder">
                         <i class="fas fa-user"></i>

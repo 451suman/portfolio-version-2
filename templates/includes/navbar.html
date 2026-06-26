@@ -28,17 +28,17 @@
                         <i class="fas fa-user me-1"></i> About
                     </a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" 
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{% url 'portfolio:project_list' %}" id="projectsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-project-diagram me-1"></i> Projects
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
-                        <li><a class="dropdown-item" href="{% url 'portfolio:project_list' %}">All Projects</a></li>
-                        {% for skill in nav_skills %}
-                        <li><a class="dropdown-item" href="{% url 'portfolio:skill_projects' skill.slug %}">{{ skill.name }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'portfolio:project_list' %}">
+                        <i class="fas fa-project-diagram me-1"></i> Projects
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'blog:blog_list' %}">

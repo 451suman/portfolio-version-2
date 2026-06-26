@@ -23,8 +23,8 @@
         <div class="row align-items-center">
             <div class="col-lg-4">
                 <div class="about-image text-center">
-                    {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.first_name }}" class="about-avatar">
+                    {% if avatar %}
+                    <img src="{{ avatar.url }}" alt="{{ profile.user.first_name }}" class="about-avatar">
                     {% else %}
                     <div class="about-avatar-placeholder">
                         <i class="fas fa-user"></i>
@@ -244,7 +244,7 @@
 <style>
 /* Page Hero */
 .page-hero {
-    background: var(--gradient-dark);
+    /* background: var(--gradient-dark); */
     padding: 5rem 0 3rem;
     color: white;
     text-align: center;

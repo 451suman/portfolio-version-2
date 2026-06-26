@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 
-from accounts.models import Profile, SocialLink
+from accounts.models import CustomUser, Profile, SocialLink
 from portfolio.models import Project, Skill, Experience
 from blog.models import BlogPost, Category, Tag
 from contact.models import ContactMessage, NewsletterSubscription
@@ -89,7 +89,7 @@ class HomePageView(TemplateView):
             )["total"]
             or 0,
         }
-
+        context["avatar"]= CustomUser.objects.all().first().avatar
         return context
 
 
@@ -109,6 +109,7 @@ class AboutView(TemplateView):
                 ).order_by("order")
         except:
             pass
+        context["avatar"]= CustomUser.objects.all().first().avatar
 
         # All skills with progress bars
         context["skills"] = Skill.objects.all().order_by(
