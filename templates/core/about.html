@@ -23,30 +23,14 @@
         <div class="row align-items-center">
             <div class="col-lg-4">
                 <div class="about-image text-center">
-                    {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.first_name }}" class="about-avatar">
+                    {% if avatar %}
+                    <img src="{{ avatar.url }}" alt="{{ profile.user.first_name }}" class="about-avatar">
                     {% else %}
                     <div class="about-avatar-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
                     {% endif %}
-                    
-                    <!-- Availability Status -->
-                    <div class="availability-status mt-4">
-                        {% if profile.is_available %}
-                        <div class="alert alert-success">
-                            <i class="fas fa-circle me-2"></i>
-                            <strong>Available for Hire</strong>
-                            <p class="mb-0 mt-2">Currently accepting new projects and opportunities</p>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-info">
-                            <i class="fas fa-circle me-2"></i>
-                            <strong>Currently Busy</strong>
-                            <p class="mb-0 mt-2">Not accepting new projects at the moment</p>
-                        </div>
-                        {% endif %}
-                    </div>
+                   
                     
                     <!-- Contact Info -->
                     <div class="contact-info mt-4">
@@ -76,16 +60,7 @@
                                 <i class="{{ social.icon_class }}"></i>
                             </a>
                             {% endfor %}
-                        {% else %}
-                            <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-twitter"></i>
-                            </a>
+                        
                         {% endif %}
                     </div>
                 </div>
@@ -96,7 +71,7 @@
                     <h2 class="mb-4">{{ profile.title|default:"Backend Developer" }}</h2>
                     
                     <div class="profession-titles mb-4">
-                        <h4 class="text-muted">Professional Titles</h4>
+                        <h4 class="">Professional Titles</h4>
                         <div class="titles-list">
                             {% if profile.profession_titles %}
                                 {% for title in profile.profession_titles %}
@@ -161,7 +136,7 @@
         <!-- Skills by Level -->
         <div class="row mb-5">
             <div class="col-lg-6">
-                <h4 class="mb-4">Expert Level</h4>
+                <!-- <h4 class="mb-4">Expert Level</h4> -->
                 {% for skill in expert_skills %}
                 <div class="skill-item mb-3">
                     <div class="skill-header">
@@ -174,52 +149,10 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="col-lg-6">
-                <h4 class="mb-4">Advanced Level</h4>
-                {% for skill in advanced_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            
         </div>
         
-        <div class="row">
-            <div class="col-lg-6">
-                <h4 class="mb-4">Intermediate Level</h4>
-                {% for skill in intermediate_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="col-lg-6">
-                <h4 class="mb-4">Beginner Level</h4>
-                {% for skill in beginner_skills %}
-                <div class="skill-item mb-3">
-                    <div class="skill-header">
-                        <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-percentage">{{ skill.percentage }}%</span>
-                    </div>
-                    <div class="skill-progress">
-                        <div class="skill-progress-bar" data-width="{{ skill.percentage }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+       
         
         <!-- All Skills Grid -->
         <div class="row mt-5">
@@ -311,7 +244,7 @@
 <style>
 /* Page Hero */
 .page-hero {
-    background: var(--gradient-dark);
+    /* background: var(--gradient-dark); */
     padding: 5rem 0 3rem;
     color: white;
     text-align: center;

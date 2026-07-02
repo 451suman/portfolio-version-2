@@ -228,16 +228,6 @@
                                 <i class="{{ social.icon_class }}"></i>
                             </a>
                             {% endfor %}
-                        {% else %}
-                            <a href="https://github.com/{{ GITHUB_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="{{ LINKEDIN_URL }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="https://twitter.com/{{ TWITTER_USERNAME }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-twitter"></i>
-                            </a>
                         {% endif %}
                     </div>
                 </div>
@@ -369,13 +359,7 @@
                 <p class="mb-4">Feel free to reach out directly via email or social media.</p>
                 <div class="quick-contact-buttons">
                     <a href="mailto:{{ SITE_EMAIL }}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-envelope me-2"></i>Email Me
-                    </a>
-                    <a href="https://github.com/{{ GITHUB_USERNAME }}" class="btn btn-outline-dark btn-lg me-3" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-github me-2"></i>GitHub
-                    </a>
-                    <a href="{{ LINKEDIN_URL }}" class="btn btn-outline-info btn-lg" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-linkedin me-2"></i>LinkedIn
+                        <i class="fas fa-envelope me-2"></i>Email Me <br> {{ SITE_EMAIL }}
                     </a>
                 </div>
             </div>
@@ -388,7 +372,7 @@
 <style>
 /* Page Hero */
 .page-hero {
-    background: var(--gradient-dark);
+    /* background: var(--gradient-dark); */
     padding: 5rem 0 3rem;
     color: white;
     text-align: center;

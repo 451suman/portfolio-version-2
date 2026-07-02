@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +25,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#-qv_#^cik#wfq(7t8fa$72y*!z^n_x28i*2sbt77e$w65dhf%"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-#-qv_#^cik#wfq(7t8fa$72y*!z^n_x28i*2sbt77e$w65dhf%"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ.get("DEBUG") == "True":
+    DEBUG = True
+else:
+    DEBUG = False
+
 
 ALLOWED_HOSTS = []
 
@@ -154,12 +165,15 @@ MESSAGE_TAGS = {
 }
 
 # Site Settings
-SITE_NAME = "Portfolio"
-SITE_DESCRIPTION = "Professional Django Developer Portfolio"
-SITE_AUTHOR = "Suman Mushyakhwo"
-SITE_EMAIL = "contact@example.com"
-SITE_PHONE = "+1234567890"
-SITE_ADDRESS = "San Francisco, CA"
-GITHUB_USERNAME = "johndoe"
-LINKEDIN_URL = "https://linkedin.com/in/johndoe"
-TWITTER_USERNAME = "johndoe"
+# ==========================
+# Site Settings
+# ==========================
+
+SITE_NAME = os.environ.get("SITE_NAME")
+SITE_DESCRIPTION = os.environ.get("SITE_DESCRIPTION")
+SITE_AUTHOR = os.environ.get("SITE_AUTHOR")
+
+# Contact Information
+SITE_EMAIL = os.environ.get("SITE_EMAIL")
+SITE_PHONE = os.environ.get("SITE_PHONE")
+SITE_ADDRESS = os.environ.get("SITE_ADDRESS")

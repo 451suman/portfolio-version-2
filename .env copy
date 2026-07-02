@@ -1,0 +1,14 @@
+SECRET_KEY="django-insecure-#-qv_#^cik#wfq(asdasdasdasdasdasdasdasdasd65dhf%""
+
+DEBUG=True
+# True or False
+
+SITE_NAME="my Portfolio"
+SITE_DESCRIPTION="Professional Python Developer Portfolio"
+SITE_AUTHOR="my"
+
+# Contact Information
+SITE_EMAIL="example@gmail.com"
+SITE_PHONE="9862176544"
+SITE_ADDRESS="Kathmandu, Nepal"
+

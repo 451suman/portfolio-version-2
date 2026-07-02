@@ -19,15 +19,6 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_editable = ("status",)
     ordering = ("-created_at",)
 
-    fieldsets = (
-        ("Contact Info", {"fields": ("name", "email", "phone", "company")}),
-        ("Message", {"fields": ("subject", "inquiry_type", "message")}),
-        ("Project Details", {"fields": ("budget", "timeline", "is_urgent")}),
-        ("Status", {"fields": ("status",)}),
-        ("Metadata", {"fields": ("ip_address", "user_agent", "referral_source")}),
-        ("Timestamps", {"fields": ("created_at", "updated_at")}),
-    )
-
     actions = ["mark_as_read", "mark_as_unread", "mark_as_responded"]
 
     def mark_as_read(self, request, queryset):
@@ -62,22 +53,6 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
     readonly_fields = ("subscription_date", "unsubscribe_date", "ip_address")
     ordering = ("-subscription_date",)
 
-    fieldsets = (
-        ("Subscriber Info", {"fields": ("email", "first_name", "last_name")}),
-        (
-            "Status",
-            {
-                "fields": (
-                    "is_active",
-                    "subscription_date",
-                    "unsubscribe_date",
-                    "unsubscribe_reason",
-                )
-            },
-        ),
-        ("Technical", {"fields": ("ip_address", "referral_source")}),
-    )
-
     actions = ["unsubscribe_selected", "resubscribe_selected"]
 
     def unsubscribe_selected(self, request, queryset):
@@ -100,10 +75,4 @@ class EmailTemplateAdmin(admin.ModelAdmin):
     list_editable = ("is_active",)
     ordering = ("name",)
 
-    fieldsets = (
-        ("Basic Info", {"fields": ("name", "description")}),
-        ("Email Content", {"fields": ("subject", "html_content", "text_content")}),
-        ("Status", {"fields": ("is_active",)}),
-        ("Timestamps", {"fields": ("created_at", "updated_at")}),
-    )
     readonly_fields = ("created_at", "updated_at")

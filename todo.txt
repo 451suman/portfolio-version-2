@@ -1,0 +1,5 @@
+- get profile avatar in home and about page.
+- work in my projects filter.
+- newsletter subscription.
+- Select email template to change.
+- fix html form design in contact form and in comment form.

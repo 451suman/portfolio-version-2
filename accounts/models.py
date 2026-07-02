@@ -30,7 +30,8 @@ class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default="Backend Developer")
     profession_titles = models.JSONField(
-        default=list, help_text="List of profession titles for rotation"
+        default=list,
+        help_text="List of profession titles for rotation eg: ['Backend Developer', 'Full Stack Developer']",
     )
     phone = models.CharField(max_length=20, blank=True)
     resume_file = models.FileField(upload_to="resumes/", blank=True, null=True)
@@ -65,17 +66,46 @@ class Profile(models.Model):
 
 
 class SocialLink(models.Model):
+    PlatformChoices = [
+        ("linkedin", "LinkedIn"),
+        ("facebook", "Facebook"),
+        ("github", "GitHub"),
+        ("twitter", "Twitter"),
+        ("instagram", "Instagram"),
+        ("website", "Website"),
+        ("youtube", "YouTube"),
+    ]
+
+    ICON_MAP = {
+        "linkedin": "fab fa-linkedin",
+        "facebook": "fab fa-facebook",
+        "github": "fab fa-github",
+        "twitter": "fab fa-twitter",
+        "instagram": "fab fa-instagram",
+        "website": "fas fa-globe",
+        "youtube": "fab fa-youtube",
+    }
+
     profile = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="social_links"
     )
-    platform = models.CharField(max_length=50)
+    platform = models.CharField(max_length=50, choices=PlatformChoices)
     url = models.URLField()
-    icon_class = models.CharField(max_length=100, help_text="Font Awesome icon class")
+    icon_class = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="icon is automatically set based on platform, but you can override it if needed from https://fontawesome.com/icons/",
+    )
+
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ["order"]
+
+    def save(self, *args, **kwargs):
+        self.icon_class = self.ICON_MAP.get(self.platform, "")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.platform} - {self.profile.user.username}"

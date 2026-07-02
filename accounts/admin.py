@@ -20,58 +20,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ("-date_joined",)
     readonly_fields = ("date_joined", "last_login")
 
-    fieldsets = (
-        (None, {"fields": ("username", "email", "password")}),
-        (
-            "Personal info",
-            {
-                "fields": (
-                    "first_name",
-                    "last_name",
-                    "bio",
-                    "location",
-                    "birth_date",
-                    "avatar",
-                    "is_available",
-                )
-            },
-        ),
-        (
-            "Contact info",
-            {
-                "fields": (
-                    "website",
-                    "github_username",
-                    "linkedin_url",
-                    "twitter_username",
-                )
-            },
-        ),
-        (
-            "Permissions",
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                )
-            },
-        ),
-        ("Important dates", {"fields": ("last_login", "date_joined")}),
-    )
-
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": ("username", "email", "password1", "password2"),
-            },
-        ),
-    )
-
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -89,34 +37,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_editable = ("preferred_work_type",)
     ordering = ("-created_at",)
 
-    fieldsets = (
-        ("Basic Info", {"fields": ("user", "title", "profession_titles")}),
-        ("Contact", {"fields": ("phone",)}),
-        (
-            "Professional",
-            {
-                "fields": (
-                    "experience_years",
-                    "hourly_rate",
-                    "preferred_work_type",
-                )
-            },
-        ),
-        ("Content", {"fields": ("skills_summary", "about_short", "about_detailed")}),
-        ("Media", {"fields": ("resume_file",)}),
-        (
-            "Statistics",
-            {
-                "fields": (
-                    "cv_download_count",
-                    "last_active",
-                    "created_at",
-                    "updated_at",
-                )
-            },
-        ),
-    )
-
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("user")
 
@@ -128,11 +48,6 @@ class SocialLinkAdmin(admin.ModelAdmin):
     search_fields = ("profile__user__username", "platform", "url")
     list_editable = ("is_active", "order")
     ordering = ("profile", "order")
-
-    fieldsets = (
-        ("Basic Info", {"fields": ("profile", "platform", "url")}),
-        ("Display", {"fields": ("icon_class", "is_active", "order")}),
-    )
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("profile")
