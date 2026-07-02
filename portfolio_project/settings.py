@@ -154,9 +154,9 @@ MESSAGE_TAGS = {
 }
 
 # Site Settings
-SITE_NAME = "Developer Portfolio"
+SITE_NAME = "Portfolio"
 SITE_DESCRIPTION = "Professional Django Developer Portfolio"
-SITE_AUTHOR = "John Doe"
+SITE_AUTHOR = "Suman Mushyakhwo"
 SITE_EMAIL = "contact@example.com"
 SITE_PHONE = "+1234567890"
 SITE_ADDRESS = "San Francisco, CA"
