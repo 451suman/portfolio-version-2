@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block title %}Contact - {{ SITE_NAME }}{% endblock %}
-{% block meta_description %}Get in touch with {{ SITE_NAME }} for project collaborations, job opportunities, or just to say hello. Find contact information and contact form.{% endblock %}
+{% block meta_description %}Get in touch with {{ SITE_NAME }} for project collaborations, job opportunities, or just to
+say hello. Find contact information and contact form.{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -25,92 +26,93 @@
             <div class="col-lg-8">
                 <div class="contact-form-container">
                     <h3 class="mb-4">Send Me a Message</h3>
-                    
+
                     {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
                     {% endif %}
-                    
+
                     <form method="POST" class="contact-form">
                         {% csrf_token %}
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.name.id_for_label }}" class="form-label">Name *</label>
                                 {{ form.name }}
                                 {% if form.name.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.name.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.name.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.email.id_for_label }}" class="form-label">Email *</label>
                                 {{ form.email }}
                                 {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.email.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.phone.id_for_label }}" class="form-label">Phone</label>
                                 {{ form.phone }}
                                 {% if form.phone.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.phone.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.phone.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.company.id_for_label }}" class="form-label">Company</label>
                                 {{ form.company }}
                                 {% if form.company.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.company.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.company.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.inquiry_type.id_for_label }}" class="form-label">Inquiry Type</label>
+                                <label for="{{ form.inquiry_type.id_for_label }}" class="form-label">Inquiry
+                                    Type</label>
                                 {{ form.inquiry_type }}
                                 {% if form.inquiry_type.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.inquiry_type.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.inquiry_type.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.subject.id_for_label }}" class="form-label">Subject *</label>
                                 {{ form.subject }}
                                 {% if form.subject.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.subject.errors.0 }}
-                                    </div>
+                                <div class="invalid-feedback d-block">
+                                    {{ form.subject.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="{{ form.message.id_for_label }}" class="form-label">Message *</label>
                             {{ form.message }}
                             {% if form.message.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.message.errors.0 }}
-                                </div>
+                            <div class="invalid-feedback d-block">
+                                {{ form.message.errors.0 }}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <!-- Project Specific Fields -->
                         <div class="project-details mb-3">
                             <h5 class="mb-3">Project Details (Optional)</h5>
@@ -119,22 +121,22 @@
                                     <label for="{{ form.budget.id_for_label }}" class="form-label">Budget</label>
                                     {{ form.budget }}
                                     {% if form.budget.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.budget.errors.0 }}
-                                        </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.budget.errors.0 }}
+                                    </div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="{{ form.timeline.id_for_label }}" class="form-label">Timeline</label>
                                     {{ form.timeline }}
                                     {% if form.timeline.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.timeline.errors.0 }}
-                                        </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.timeline.errors.0 }}
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="form-check">
@@ -145,17 +147,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="{{ form.referral_source.id_for_label }}" class="form-label">How did you find me?</label>
+                                    <label for="{{ form.referral_source.id_for_label }}" class="form-label">How did you
+                                        find me?</label>
                                     {{ form.referral_source }}
                                     {% if form.referral_source.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.referral_source.errors.0 }}
-                                        </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.referral_source.errors.0 }}
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-paper-plane me-2"></i>Send Message
@@ -167,12 +170,12 @@
                     </form>
                 </div>
             </div>
-            
+
             <!-- Contact Information -->
             <div class="col-lg-4">
                 <div class="contact-info">
                     <h3 class="mb-4">Contact Information</h3>
-                    
+
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i class="fas fa-envelope"></i>
@@ -182,7 +185,7 @@
                             <a href="mailto:{{ SITE_EMAIL }}">{{ SITE_EMAIL }}</a>
                         </div>
                     </div>
-                    
+
                     {% if profile.phone %}
                     <div class="contact-item">
                         <div class="contact-icon">
@@ -194,7 +197,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if profile.website %}
                     <div class="contact-item">
                         <div class="contact-icon">
@@ -202,11 +205,12 @@
                         </div>
                         <div class="contact-details">
                             <h4>Website</h4>
-                            <a href="{{ profile.website }}" target="_blank" rel="noopener noreferrer">{{ profile.website }}</a>
+                            <a href="{{ profile.website }}" target="_blank" rel="noopener noreferrer">{{ profile.website
+                                }}</a>
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i class="fas fa-map-marker-alt"></i>
@@ -217,21 +221,21 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Social Links -->
                 <div class="social-section">
                     <h3 class="mb-4">Connect With Me</h3>
                     <div class="social-links">
                         {% if social_links %}
-                            {% for social in social_links %}
-                            <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                                <i class="{{ social.icon_class }}"></i>
-                            </a>
-                            {% endfor %}
+                        {% for social in social_links %}
+                        <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer">
+                            <i class="{{ social.icon_class }}"></i>
+                        </a>
+                        {% endfor %}
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <!-- Availability -->
                 <div class="availability-section">
                     <h3 class="mb-4">Availability</h3>
@@ -252,12 +256,13 @@
                         </div>
                         <div class="status-text">
                             <h4>Currently Busy</h4>
-                            <p>I'm not accepting new projects at the moment, but feel free to reach out for future opportunities.</p>
+                            <p>I'm not accepting new projects at the moment, but feel free to reach out for future
+                                opportunities.</p>
                         </div>
                     </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Response Time -->
                 <div class="response-time">
                     <h3 class="mb-4">Response Time</h3>
@@ -295,52 +300,63 @@
                 <div class="accordion" id="faqAccordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne">
                                 What types of projects do you work on?
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                I specialize in Django web applications, REST APIs, backend systems, and database design. I work on projects ranging from small business websites to enterprise-level applications.
+                                I specialize in Django web applications, REST APIs, backend systems, and database
+                                design. I work on projects ranging from small business websites to enterprise-level
+                                applications.
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo">
                                 What is your typical project timeline?
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Project timelines vary depending on complexity and scope. Simple projects typically take 2-4 weeks, while complex applications may take 2-6 months. I'll provide a detailed timeline during our initial consultation.
+                                Project timelines vary depending on complexity and scope. Simple projects typically take
+                                2-4 weeks, while complex applications may take 2-6 months. I'll provide a detailed
+                                timeline during our initial consultation.
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree">
                                 Do you work with startups and small businesses?
                             </button>
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Absolutely! I love working with startups and small businesses to help them build scalable, cost-effective solutions that can grow with their business.
+                                Absolutely! I love working with startups and small businesses to help them build
+                                scalable, cost-effective solutions that can grow with their business.
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour">
                                 What is your pricing structure?
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                I offer flexible pricing options including fixed-price projects, hourly rates, and retainer agreements. Pricing depends on project complexity, timeline, and specific requirements.
+                                I offer flexible pricing options including fixed-price projects, hourly rates, and
+                                retainer agreements. Pricing depends on project complexity, timeline, and specific
+                                requirements.
                             </div>
                         </div>
                     </div>
@@ -370,252 +386,357 @@
 
 {% block extra_css %}
 <style>
-/* Page Hero */
-.page-hero {
-    /* background: var(--gradient-dark); */
-    padding: 5rem 0 3rem;
-    color: white;
-    text-align: center;
-}
-
-/* Contact Section */
-.contact-section {
-    background: var(--bg-primary);
-}
-
-.contact-form-container {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-}
-
-.contact-form .form-control,
-.contact-form .form-select {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-}
-
-.contact-form .form-control:focus,
-.contact-form .form-select:focus {
-    background: var(--glass);
-    border-color: var(--accent);
-    color: var(--text-primary);
-    box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
-}
-
-.project-details {
-    background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: var(--radius-md);
-    margin-top: 2rem;
-}
-
-.form-actions {
-    margin-top: 2rem;
-}
-
-/* Contact Info */
-.contact-info {
-    margin-bottom: 2rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    transition: all var(--transition-normal);
-}
-
-.contact-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.contact-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--gradient-neon);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-    margin-right: 1.5rem;
-    flex-shrink: 0;
-}
-
-.contact-details h4 {
-    margin: 0 0 0.5rem 0;
-    color: var(--text-primary);
-}
-
-.contact-details a {
-    color: var(--accent);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-}
-
-.contact-details a:hover {
-    color: var(--accent-hover);
-}
-
-/* Social Section */
-.social-section {
-    margin-bottom: 2rem;
-}
-
-.social-links {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-/* Availability Section */
-.availability-section {
-    margin-bottom: 2rem;
-}
-
-.availability-status {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-}
-
-.availability-status.available {
-    background: rgba(40, 167, 69, 0.1);
-    border-color: var(--success);
-}
-
-.availability-status.busy {
-    background: rgba(255, 193, 7, 0.1);
-    border-color: var(--warning);
-}
-
-.status-icon {
-    margin-right: 1.5rem;
-}
-
-.status-icon i {
-    font-size: 1.5rem;
-}
-
-.available .status-icon i {
-    color: var(--success);
-}
-
-.busy .status-icon i {
-    color: var(--warning);
-}
-
-.status-text h4 {
-    margin: 0 0 0.5rem 0;
-    color: var(--text-primary);
-}
-
-.status-text p {
-    margin: 0;
-    color: var(--text-secondary);
-}
-
-/* Response Time */
-.response-time {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-}
-
-.time-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-}
-
-.time-item:last-child {
-    margin-bottom: 0;
-}
-
-.time-item i {
-    color: var(--accent);
-}
-
-/* FAQ Section */
-.faq-section {
-    background: var(--bg-secondary);
-}
-
-.accordion-button {
-    background: var(--glass);
-    color: var(--text-primary);
-    border: 1px solid var(--border);
-}
-
-.accordion-button:not(.collapsed) {
-    background: var(--accent);
-    color: white;
-}
-
-.accordion-button:focus {
-    box-shadow: none;
-    border-color: var(--accent);
-}
-
-.accordion-body {
-    background: var(--glass);
-    color: var(--text-secondary);
-}
-
-/* Quick Contact */
-.quick-contact {
-    background: var(--bg-primary);
-}
-
-.quick-contact-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .contact-item {
-        flex-direction: column;
+    /* ===========================
+   PAGE HERO
+=========================== */
+    .page-hero {
+        padding: 5rem 0 3rem;
         text-align: center;
+        color: #fff;
     }
-    
-    .contact-icon {
-        margin-right: 0;
-        margin-bottom: 1rem;
+
+    /* ===========================
+   CONTACT SECTION
+=========================== */
+    .contact-section {
+        background: var(--bg-primary);
     }
-    
-    .availability-status {
-        flex-direction: column;
-        text-align: center;
+
+    .contact-form-container {
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
     }
-    
-    .status-icon {
-        margin-right: 0;
-        margin-bottom: 1rem;
+
+    .contact-form label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: .6rem;
     }
-    
-    .quick-contact-buttons {
-        flex-direction: column;
-    }
-    
-    .quick-contact-buttons .btn {
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea,
+    .contact-form .form-control,
+    .contact-form .form-select {
+
         width: 100%;
+        background: #22253d;
+        border: 1px solid #3b4262;
+        color: #fff;
+        border-radius: 12px;
+        padding: .85rem 1rem;
+        transition: .3s;
+        font-size: 15px;
     }
-}
+
+    .contact-form textarea {
+        min-height: 180px;
+        resize: vertical;
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+        color: #aeb5d0;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+        background: #22253d;
+        color: #fff;
+        border-color: #00d4ff;
+        box-shadow: 0 0 0 .2rem rgba(0, 212, 255, .15);
+        outline: none;
+    }
+
+    .contact-form .row {
+        margin-bottom: .4rem;
+    }
+
+    /* ===========================
+   PROJECT DETAILS
+=========================== */
+
+    .project-details {
+        background: #1d2035;
+        border: 1px solid rgba(255, 255, 255, .05);
+        border-radius: 16px;
+        padding: 1.8rem;
+        margin-top: 2rem;
+    }
+
+    .project-details h5 {
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ===========================
+   CHECKBOX
+=========================== */
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        margin-top: 3px;
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        margin-left: 8px;
+        color: var(--text-secondary);
+    }
+
+    /* ===========================
+   BUTTONS
+=========================== */
+
+    .form-actions {
+        margin-top: 2rem;
+    }
+
+    .form-actions .btn {
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .form-actions .btn-primary {
+        background: var(--gradient-neon);
+        border: none;
+    }
+
+    .form-actions .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-actions .btn-outline-secondary {
+        border: 1px solid var(--border);
+    }
+
+    /* ===========================
+   CONTACT INFO
+=========================== */
+
+    .contact-info,
+    .social-section,
+    .availability-section,
+    .response-time {
+        margin-bottom: 2rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 18px;
+        transition: .3s;
+    }
+
+    .contact-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, .2);
+    }
+
+    .contact-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: var(--gradient-neon);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .contact-details h4 {
+        margin-bottom: 4px;
+        color: #fff;
+    }
+
+    .contact-details a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .contact-details a:hover {
+        color: #fff;
+    }
+
+    /* ===========================
+   SOCIAL
+=========================== */
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .social-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, .08);
+        color: #fff;
+        transition: .3s;
+        text-decoration: none;
+    }
+
+    .social-icon:hover {
+        background: var(--gradient-neon);
+        transform: translateY(-5px);
+    }
+
+    /* ===========================
+   AVAILABILITY
+=========================== */
+
+    .availability-status {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 1.5rem;
+        border-radius: 18px;
+    }
+
+    .available {
+        background: rgba(40, 167, 69, .12);
+        border: 1px solid #28a745;
+    }
+
+    .busy {
+        background: rgba(255, 193, 7, .12);
+        border: 1px solid #ffc107;
+    }
+
+    .status-icon i {
+        font-size: 20px;
+    }
+
+    .available i {
+        color: #28a745;
+    }
+
+    .busy i {
+        color: #ffc107;
+    }
+
+    .status-text h4 {
+        color: #fff;
+    }
+
+    .status-text p {
+        margin: 0;
+    }
+
+    /* ===========================
+   RESPONSE TIME
+=========================== */
+
+    .response-time {
+        background: var(--glass);
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, .08);
+        padding: 1.8rem;
+    }
+
+    .time-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: var(--text-secondary);
+    }
+
+    .time-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .time-item i {
+        color: var(--accent);
+    }
+
+    /* ===========================
+   FAQ
+=========================== */
+
+    .faq-section {
+        background: var(--bg-secondary);
+    }
+
+    .accordion-item {
+        background: transparent;
+        border: none;
+        margin-bottom: 15px;
+    }
+
+    .accordion-button {
+        background: var(--glass);
+        color: #fff;
+        border-radius: 12px !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: var(--gradient-neon);
+        color: #fff;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+
+    .accordion-body {
+        background: #22253d;
+        color: var(--text-secondary);
+    }
+
+    /* ===========================
+   QUICK CONTACT
+=========================== */
+
+    .quick-contact-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* ===========================
+   MOBILE
+=========================== */
+
+    @media(max-width:768px) {
+
+        .contact-form-container {
+            padding: 1.5rem;
+        }
+
+        .contact-item,
+        .availability-status {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .quick-contact-buttons {
+            flex-direction: column;
+        }
+
+        .quick-contact-buttons .btn {
+            width: 100%;
+        }
+    }
 </style>
 {% endblock %}

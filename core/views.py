@@ -1,15 +1,9 @@
-from django.views.generic import TemplateView, ListView, DetailView
-from django.db.models import Q, Count, Sum
-from django.shortcuts import get_object_or_404
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.http import JsonResponse
-from django.core.paginator import Paginator
+from django.db.models import Count, Q, Sum
+from django.views.generic import TemplateView
 
-from accounts.models import CustomUser, Profile, SocialLink
-from portfolio.models import Project, Skill, Experience
-from blog.models import BlogPost, Category, Tag
-from contact.models import ContactMessage, NewsletterSubscription
+from accounts.models import CustomUser, Profile
+from blog.models import BlogPost
+from portfolio.models import Experience, Project, Skill
 
 
 class HomePageView(TemplateView):
@@ -89,7 +83,10 @@ class HomePageView(TemplateView):
             )["total"]
             or 0,
         }
-        context["avatar"]= CustomUser.objects.all().first().avatar
+        try:
+            context["avatar"] = CustomUser.objects.all().first().avatar
+        except:
+            context["avatar"] = None
         return context
 
 
@@ -109,7 +106,10 @@ class AboutView(TemplateView):
                 ).order_by("order")
         except:
             pass
-        context["avatar"]= CustomUser.objects.all().first().avatar
+        try:
+            context["avatar"] = CustomUser.objects.all().first().avatar
+        except:
+            context["avatar"] = None
 
         # All skills with progress bars
         context["skills"] = Skill.objects.all().order_by(
@@ -122,9 +122,7 @@ class AboutView(TemplateView):
         ).order_by("-is_current", "-start_date")
 
         # Skills by level
-        context["expert_skills"] = Skill.objects.all().order_by(
-            "order", "name"
-        )
+        context["expert_skills"] = Skill.objects.all().order_by("order", "name")
         context["advanced_skills"] = Skill.objects.filter(level="advanced").order_by(
             "order", "name"
         )
