@@ -299,10 +299,10 @@
                     {% endif %}
 
                     <!-- Newsletter -->
-                    <div class="sidebar-section">
+                    <!-- <div class="sidebar-section">
                         <h4 class="sidebar-title">Subscribe to Newsletter</h4>
                         <p>Get the latest posts delivered to your inbox.</p>
-                        <form action="{% url 'contact:newsletter' %}" method="POST" class="newsletter-form">
+                        <form action="{ % url 'contact:newsletter' %}" method="POST" class="newsletter-form">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <input type="email" name="email" class="form-control" placeholder="Your email" required>
@@ -311,7 +311,7 @@
                                 <i class="fas fa-bell me-2"></i>Subscribe
                             </button>
                         </form>
-                    </div>
+                    </div> -->
 
                     <!-- Blog Stats -->
                     <div class="sidebar-section">
