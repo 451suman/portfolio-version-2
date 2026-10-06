@@ -188,8 +188,7 @@
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ project.title }}</h5>
-                        <p class="card-text">{{ project.short_description|default:project.description|truncatewords:20
-                            }}</p>
+                        <p class="card-text">{{ project.short_description }}</p>
                         <div class="project-tech">
                             {% for tech in project.technologies.all|slice:":3" %}
                             <span class="badge bg-secondary">{{ tech.name }}</span>
