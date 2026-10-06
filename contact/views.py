@@ -1,21 +1,20 @@
-from django.views.generic import CreateView, FormView, TemplateView
-from django.contrib import messages
-from django.urls import reverse_lazy
-from django.shortcuts import redirect
-from django.http import JsonResponse
-from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, FormView, TemplateView
 
-from .models import ContactMessage, NewsletterSubscription, EmailTemplate
 from .forms import ContactForm, NewsletterForm
+from .models import ContactMessage, EmailTemplate, NewsletterSubscription
 
 
 class ContactView(CreateView):
     model = ContactMessage
     form_class = ContactForm
     template_name = "contact/contact.html"
-    success_url = reverse_lazy("contact:success")
+    success_url = reverse_lazy("contact:contact")
 
     def form_valid(self, form):
         # Set additional fields
@@ -28,7 +27,7 @@ class ContactView(CreateView):
         # Send notification email (in production)
         try:
             self.send_notification_email(form.instance)
-        except Exception as e:
+        except Exception:
             # Log error but don't fail the form submission
             pass
 
@@ -60,10 +59,10 @@ class ContactView(CreateView):
         Message:
         {contact_message.message}
         
-        Budget: {contact_message.budget or 'Not specified'}
-        Timeline: {contact_message.timeline or 'Not specified'}
+        Budget: {contact_message.budget or "Not specified"}
+        Timeline: {contact_message.timeline or "Not specified"}
         Urgent: {contact_message.is_urgent}
-        Referral: {contact_message.referral_source or 'Not specified'}
+        Referral: {contact_message.referral_source or "Not specified"}
         """
 
         send_mail(
@@ -75,10 +74,6 @@ class ContactView(CreateView):
         )
 
 
-class ContactSuccessView(TemplateView):
-    template_name = "contact/success.html"
-
-
 class NewsletterSubscribeView(FormView):
     form_class = NewsletterForm
     template_name = "contact/newsletter_subscribe.html"
@@ -88,7 +83,7 @@ class NewsletterSubscribeView(FormView):
         email = form.cleaned_data["email"]
         first_name = form.cleaned_data.get("first_name", "")
         last_name = form.cleaned_data.get("last_name", "")
-
+        
         # Check if already subscribed
         if NewsletterSubscription.objects.filter(email=email).exists():
             subscription = NewsletterSubscription.objects.get(email=email)
@@ -117,7 +112,7 @@ class NewsletterSubscribeView(FormView):
             # Send welcome email (in production)
             try:
                 self.send_welcome_email(subscription)
-            except Exception as e:
+            except Exception:
                 # Log error but don't fail the subscription
                 pass
 
@@ -145,7 +140,7 @@ class NewsletterSubscribeView(FormView):
             # Use default template
             subject = "Welcome to Our Newsletter!"
             message = f"""
-            Hi {subscription.first_name or 'there'},
+            Hi {subscription.first_name or "there"},
             
             Thank you for subscribing to our newsletter! We're excited to have you join our community.
             
@@ -219,7 +214,7 @@ class AjaxContactView(CreateView):
         # Send notification email (in production)
         try:
             self.send_notification_email(self.object)
-        except Exception as e:
+        except Exception:
             # Log error but don't fail the form submission
             pass
 

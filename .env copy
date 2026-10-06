@@ -1,4 +1,4 @@
-SECRET_KEY="django-insecure-#-qv_#^cik#wfq(asdasdasdasdasdasdasdasdasd65dhf%""
+SECRET_KEY="django-insecure-#-qv_#^dasdasdasdasdasdasdasdasd65dhf%""
 
 DEBUG=True
 # True or False
@@ -12,3 +12,13 @@ SITE_EMAIL="example@gmail.com"
 SITE_PHONE="9862176544"
 SITE_ADDRESS="Kathmandu, Nepal"
 
+
+EMAIL_HOST_USER="SNEND_EMAIL_BY_THIS_USER@gmail.com"
+EMAIL_HOST_PASSWORD=aasadasasdasdasd
+EMAIL_HOST='smtp.gmail.com' 
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+
+
+ADMIN_EMAIL="SEND_NOTIFICATIO_TO_ADMIN@gmail.com"
