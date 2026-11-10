@@ -3,24 +3,6 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import CustomUser, Profile, SocialLink
 
 
-@admin.register(CustomUser)
-class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        "username",
-        "email",
-        "first_name",
-        "last_name",
-        "is_available",
-        "is_staff",
-        "is_active",
-        "date_joined",
-    )
-    list_filter = ("is_staff", "is_active", "is_available", "date_joined")
-    search_fields = ("username", "email", "first_name", "last_name")
-    ordering = ("-date_joined",)
-    readonly_fields = ("date_joined", "last_login")
-
-
 # @admin.register(CustomUser)
 # class UserAdmin(BaseUserAdmin):
 #     list_display = (
@@ -37,6 +19,136 @@ class UserAdmin(admin.ModelAdmin):
 #     search_fields = ("username", "email", "first_name", "last_name")
 #     ordering = ("-date_joined",)
 #     readonly_fields = ("date_joined", "last_login")
+
+
+# =====================================================
+# CUSTOM USER ADMIN
+# =====================================================
+
+
+@admin.register(CustomUser)
+class CustomUserAdmin(BaseUserAdmin):
+    list_display = (
+        "id",
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "is_available",
+        "is_staff",
+        "is_superuser",
+        "is_active",
+        "date_joined",
+    )
+
+    list_filter = (
+        "is_staff",
+        "is_superuser",
+        "is_active",
+        "is_available",
+        "groups",
+        "date_joined",
+    )
+
+    search_fields = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "location",
+        "github_username",
+    )
+
+    ordering = ("-date_joined",)
+
+    readonly_fields = (
+        "date_joined",
+        "last_login",
+    )
+
+    fieldsets = (
+        (
+            "Account Information",
+            {
+                "fields": (
+                    "username",
+                    "email",
+                    "password",
+                )
+            },
+        ),
+        (
+            "Personal Information",
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "avatar",
+                    "bio",
+                    "location",
+                    "birth_date",
+                    "website",
+                )
+            },
+        ),
+        (
+            "Social Profiles",
+            {
+                "fields": (
+                    "github_username",
+                    "linkedin_url",
+                    "twitter_username",
+                )
+            },
+        ),
+        ("Availability", {"fields": ("is_available",)}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (
+            "Important Dates",
+            {
+                "fields": (
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
+    )
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "email",
+                    "password1",
+                    "password2",
+                    "first_name",
+                    "last_name",
+                    "is_available",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                ),
+            },
+        ),
+    )
+
+    list_per_page = 25
+    list_max_show_all = 100
+    date_hierarchy = "date_joined"
 
 
 @admin.register(Profile)
