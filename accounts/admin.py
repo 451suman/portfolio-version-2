@@ -4,7 +4,7 @@ from .models import CustomUser, Profile, SocialLink
 
 
 @admin.register(CustomUser)
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = (
         "username",
         "email",
@@ -19,6 +19,24 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("-date_joined",)
     readonly_fields = ("date_joined", "last_login")
+
+
+# @admin.register(CustomUser)
+# class UserAdmin(BaseUserAdmin):
+#     list_display = (
+#         "username",
+#         "email",
+#         "first_name",
+#         "last_name",
+#         "is_available",
+#         "is_staff",
+#         "is_active",
+#         "date_joined",
+#     )
+#     list_filter = ("is_staff", "is_active", "is_available", "date_joined")
+#     search_fields = ("username", "email", "first_name", "last_name")
+#     ordering = ("-date_joined",)
+#     readonly_fields = ("date_joined", "last_login")
 
 
 @admin.register(Profile)
