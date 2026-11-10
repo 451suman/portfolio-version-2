@@ -229,8 +229,14 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <div class="timeline-date">
-                        {{ experience.start_date|date:"M Y" }} - {% if experience.is_current %}Present{% else %}{{
-                        experience.end_date|date:"M Y" }}{% endif %}
+                        {{ experience.start_date|date:"M Y" }} -
+                        {% if experience.is_current %}
+                        Present
+                        {% elif experience.end_date %}
+                        {{ experience.end_date|date:"M Y" }}
+                        {% else %}
+                        Currently unavailable
+                        {% endif %}
                     </div>
                     <h4>{{ experience.position }}</h4>
                     <h5>{{ experience.company }}</h5>
