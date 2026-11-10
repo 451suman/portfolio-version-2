@@ -1,359 +1,365 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-
 {% block title %}{{ SITE_NAME }} - Professional Django Developer Portfolio{% endblock %}
 {% block meta_description %}{{ SITE_DESCRIPTION }}{% endblock %}
-
 {% block content %}
-<!-- Particle Background -->
-<div class="particles-container" id="particlesContainer"></div>
-
-<!-- Hero Section -->
-<section class="hero-section" id="hero">
-    <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6 hero-content">
-                <div class="hero-title">
-                    <h1 class="display-3 fw-bold mb-3">
-                        <span class="text-gradient">Hello, I'm</span><br>
-                        {{ profile.user.first_name|default:"Your Name" }}
-                    </h1>
-                    <div class="profession-rotation mb-4">
-                        <span>Backend Developer</span>
-                        <span>Django Developer</span>
-                        <span>API Specialist</span>
-                        <span>Python Developer</span>
-                    </div>
-                    <p class="lead hero-description">
-                        {{ profile.about_short}}
-                    </p>
-                </div>
-
-                <div class="hero-buttons">
-                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-project-diagram me-2"></i>View Projects
-                    </a>
-                    <a href="{% url 'contact:contact' %}" class="btn btn-outline-primary btn-lg me-3">
-                        <i class="fas fa-envelope me-2"></i>Contact Me
-                    </a>
-                    {% if profile.resume_file %}
-                    <a href="{{ profile.resume_file.url }}" class="btn btn-outline-primary btn-lg me-3 " download>
-                        <i class="fas fa-download me-2"></i>Download Resume
-                    </a>
-                    {% endif %}
-                </div>
-
-                <!-- Social Icons -->
-                <div class="hero-social mt-4 ">
-                    {% if social_links %}
-                    {% for social in social_links %}
-                    <a href="{{ social.url }}" class="social-icon" target="_blank" rel="noopener noreferrer">
-                        <i class="{{ social.icon_class }}"></i>
-                    </a>
-                    {% endfor %}
-
-                    {% endif %}
-                </div>
-
-                <!-- Availability Badge -->
-                <div class="hero-availability mt-4">
-                    {% if profile.is_available %}
-                    <span class="badge bg-success px-3 py-2">
-                        <i class="fas fa-circle me-2"></i>Available for Hire
-                    </span>
-                    {% else %}
-                    <span class="badge bg-secondary px-3 py-2">
-                        <i class="fas fa-circle me-2"></i>Currently Busy
-                    </span>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="col-lg-6 hero-image-section">
-                <!-- Developer Image -->
-                <div class="hero-image-container">
-                    {% if avatar %}
-                    <img src="{{ avatar.url }}" alt="{{ profile.user.first_name }}" class="hero-image">
-                    {% else %}
-                    <div class="hero-avatar-placeholder">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Code Editor Card -->
-                <div class="code-editor hero-code-card">
-                    <div class="code-header">
-                        <div class="code-dots">
-                            <span class="dot red"></span>
-                            <span class="dot yellow"></span>
-                            <span class="dot green"></span>
+    <!-- Particle Background -->
+    <div class="particles-container" id="particlesContainer"></div>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6 hero-content">
+                    <div class="hero-title">
+                        <h1 class="display-3 fw-bold mb-3">
+                            <span class="text-gradient">Hello, I'm</span>
+                            <br>
+                            {{ profile.user.first_name|default:"Your Name" }}
+                        </h1>
+                        <div class="profession-rotation mb-4">
+                            <span>Backend Developer</span>
+                            <span>Django Developer</span>
+                            <span>API Specialist</span>
+                            <span>Python Developer</span>
                         </div>
-                        <div class="code-title">main.py</div>
+                        <p class="lead hero-description">{{ profile.about_short }}</p>
                     </div>
-                    <div class="code-content">
-                        <div class="code-line"><span class="keyword">from</span> django.http <span
-                                class="keyword">import</span> HttpResponse</div>
-                        <div class="code-line"><span class="keyword">from</span> django.views <span
-                                class="keyword">import</span> View</div>
-                        <div class="code-line"></div>
-                        <div class="code-line"><span class="keyword">class</span> <span
-                                class="function">HomePageView</span>(View):</div>
-                        <div class="code-line"> <span class="keyword">def</span> <span class="function">get</span>(self,
-                            request):</div>
-                        <div class="code-line"> <span class="keyword">return</span> HttpResponse(<span
-                                class="string">"Hello, World!"</span>)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- About Preview Section -->
-<section class="about-preview py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="display-5 fw-bold">About Me</h2>
-                <p class="lead text-muted">Building amazing web experiences with Django and Python</p>
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="about-content">
-                    <h3 class="mb-3">{{ profile.title|default:"Backend Developer" }}</h3>
-                    <p>{{ profile.about_detailed|default:"I'm a passionate backend developer with expertise in Django,
-                        Python, and building scalable web applications. I love turning complex problems into simple,
-                        beautiful, and intuitive solutions." }}</p>
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <span class="counter" data-target="{{ profile.experience_years|default:'5' }}">0</span>
-                            <span class="stat-label">Years Experience</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="counter" data-target="{{ project_stats.total_projects|default:'10' }}">0</span>
-                            <span class="stat-label">Projects Completed</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="counter"
-                                data-target="{{ project_stats.total_categories|default:'5' }}">0</span>
-                            <span class="stat-label">Technologies</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'core:about' %}" class="btn btn-outline-primary mt-4">
-                        Learn More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="featured-skills">
-                    <h4 class="mb-1">Core Technologies</h4>
-                    <div class="skills-grid">
-                        {% for skill in featured_skills %}
-                        <div class="skill-card">
-                            <div class="skill-icon">
-                                <!-- <i class="fab fa-python"></i> -->
-                            </div>
-                            <div class="skill-name">{{ skill.name }}</div>
-                            <div class="skill-level">{{ skill.get_level_display }}</div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Projects Section -->
-<section class="featured-projects py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="display-5 fw-bold">Featured Projects</h2>
-                <p class="lead text-muted">Showcasing my best work and technical expertise</p>
-            </div>
-        </div>
-        <div class="row">
-            {% for project in featured_projects %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="project-card card h-100">
-                    {% if project.featured_image %}
-                    <img src="{{ project.featured_image.url }}" class="card-img-top" alt="{{ project.title }}">
-                    {% else %}
-                    <div class="card-img-top project-placeholder">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ project.title }}</h5>
-                        <p class="card-text">{{ project.short_description }}</p>
-                        <div class="project-tech">
-                            {% for tech in project.technologies.all|slice:":3" %}
-                            <span class="badge bg-secondary">{{ tech.name }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent">
-                        <a href="{% url 'portfolio:project_detail' project.slug %}" class="btn btn-primary btn-sm">
-                            View Project <i class="fas fa-arrow-right ms-2"></i>
+                    <div class="hero-buttons">
+                        <a href="{% url 'portfolio:project_list' %}"
+                           class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-project-diagram me-2"></i>View Projects
                         </a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="row mt-4">
-            <div class="col-lg-12 text-center">
-                <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-primary btn-lg">
-                    View All Projects <i class="fas fa-th-large ms-2"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Experience Timeline Section -->
-<section class="experience-timeline py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="display-5 fw-bold">Experience Timeline</h2>
-                <p class="lead text-muted">My professional journey and growth</p>
-            </div>
-        </div>
-        <div class="timeline">
-            {% for experience in experiences %}
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-date">
-                        {{ experience.start_date|date:"M Y" }} -
-                        {% if experience.is_current %}
-                        Present
-                        {% elif experience.end_date %}
-                        {{ experience.end_date|date:"M Y" }}
-                        {% else %}
-                        Currently unavailable
+                        <a href="{% url 'contact:contact' %}"
+                           class="btn btn-outline-primary btn-lg me-3">
+                            <i class="fas fa-envelope me-2"></i>Contact Me
+                        </a>
+                        {% if profile.resume_file %}
+                            <a href="{{ profile.resume_file.url }}"
+                               class="btn btn-outline-primary btn-lg me-3"
+                               download>
+                                <i class="fas fa-download me-2"></i>Download Resume
+                            </a>
                         {% endif %}
                     </div>
-                    <h4>{{ experience.position }}</h4>
-                    <h5>{{ experience.company }}</h5>
-                    <p>{{ experience.description }}</p>
-                    <div class="timeline-tech">
-                        {% for tech in experience.technologies.all %}
-                        <span class="badge bg-primary">{{ tech.name }}</span>
-                        {% endfor %}
+                    <!-- Social Icons -->
+                    <div class="hero-social mt-4">
+                        {% if social_links %}
+                            {% for social in social_links %}
+                                <a href="{{ social.url }}"
+                                   class="social-icon"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <i class="{{ social.icon_class }}"></i>
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <!-- Availability Badge -->
+                    <div class="hero-availability mt-4">
+                        {% if profile.user.is_available %}
+                            <span class="badge bg-success px-3 py-2">
+                                <i class="fas fa-circle me-2"></i>Available for Hire
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary px-3 py-2">
+                                <i class="fas fa-circle me-2"></i>Currently Busy
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-image-section">
+                    <!-- Developer Image -->
+                    <div class="hero-image-container">
+                        {% if avatar %}
+                            <img src="{{ avatar.url }}"
+                                 alt="{{ profile.user.first_name }}"
+                                 class="hero-image">
+                        {% else %}
+                            <div class="hero-avatar-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Code Editor Card -->
+                    <div class="code-editor hero-code-card">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="code-title">main.py</div>
+                        </div>
+                        <div class="code-content">
+                            <div class="code-line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</div>
+                            <div class="code-line"><span class="keyword">from</span> django.views <span class="keyword">import</span> View</div>
+                            <div class="code-line"></div>
+                            <div class="code-line"><span class="keyword">class</span> <span class="function">HomePageView</span>(View):</div>
+                            <div class="code-line">
+                                <span class="keyword">def</span> <span class="function">get</span>(self,
+                                request):
+                            </div>
+                            <div class="code-line"> <span class="keyword">return</span> HttpResponse(<span class="string">"Hello, World!"</span>)</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
-
-<!-- Featured Blog Section -->
-<section class="featured-blog py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="display-5 fw-bold">Latest Blog Posts</h2>
-                <p class="lead text-muted">Sharing knowledge and insights</p>
+    </section>
+    <!-- About Preview Section -->
+    <section class="about-preview py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">About Me</h2>
+                    <p class="lead text-muted">Building amazing web experiences with Django and Python</p>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            {% for post in featured_posts %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="blog-card card h-100">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
-                    {% else %}
-                    <div class="card-img-top blog-placeholder">
-                        <i class="fas fa-blog"></i>
-                    </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="blog-meta">
-                            <span class="blog-date">{{ post.published_at|date:"M d, Y" }}</span>
-                            <span class="blog-reading-time">{{ post.reading_time }} min read</span>
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="about-content">
+                        <h3 class="mb-3">{{ profile.title|default:"Backend Developer" }}</h3>
+                        <p>{{ profile.about_detailed|default:"I'm a passionate backend developer with expertise in Django,
+                        Python, and building scalable web applications. I love turning complex problems into simple,
+                        beautiful, and intuitive solutions." }}</p>
+                        <div class="about-stats">
+                            <div class="stat-item">
+                                <span class="counter"
+                                      data-target="{{ profile.experience_years|default:'5' }}">0</span>
+                                <span class="stat-label">Years Experience</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="counter"
+                                      data-target="{{ project_stats.total_projects|default:'10' }}">0</span>
+                                <span class="stat-label">Projects Completed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="counter"
+                                      data-target="{{ project_stats.total_categories|default:'5' }}">0</span>
+                                <span class="stat-label">Technologies</span>
+                            </div>
                         </div>
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="card-text">{{ post.excerpt|default:post.content|striptags|truncatewords:15 }}</p>
-                        <div class="blog-categories">
-                            {% for category in post.categories.all|slice:":2" %}
-                            <span class="badge bg-info">{{ category.name }}</span>
+                        <a href="{% url 'core:about' %}" class="btn btn-outline-primary mt-4">
+                            Learn More <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="featured-skills">
+                        <h4 class="mb-1">Core Technologies</h4>
+                        <div class="skills-grid">
+                            {% for skill in featured_skills %}
+                                <div class="skill-card">
+                                    <div class="skill-icon">
+                                        <!-- <i class="fab fa-python"></i> -->
+                                    </div>
+                                    <div class="skill-name">{{ skill.name }}</div>
+                                    <div class="skill-level">{{ skill.get_level_display }}</div>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent">
-                        <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-primary btn-sm">
-                            Read More <i class="fas fa-arrow-right ms-2"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Featured Projects Section -->
+    <section class="featured-projects py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">Featured Projects</h2>
+                    <p class="lead text-muted">Showcasing my best work and technical expertise</p>
+                </div>
+            </div>
+            <div class="row">
+                {% for project in featured_projects %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="project-card card h-100">
+                            {% if project.featured_image %}
+                                <img src="{{ project.featured_image.url }}"
+                                     class="card-img-top"
+                                     alt="{{ project.title }}">
+                            {% else %}
+                                <div class="card-img-top project-placeholder">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">{{ project.short_description }}</p>
+                                <div class="project-tech">
+                                    {% for tech in project.technologies.all|slice:":3" %}
+                                        <span class="badge bg-secondary">{{ tech.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'portfolio:project_detail' project.slug %}"
+                                   class="btn btn-primary btn-sm">
+                                    View Project <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-12 text-center">
+                    <a href="{% url 'portfolio:project_list' %}"
+                       class="btn btn-outline-primary btn-lg">
+                        View All Projects <i class="fas fa-th-large ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Experience Timeline Section -->
+    <section class="experience-timeline py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">Experience Timeline</h2>
+                    <p class="lead text-muted">My professional journey and growth</p>
+                </div>
+            </div>
+            <div class="timeline">
+                {% for experience in experiences %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                {{ experience.start_date|date:"M Y" }} -
+                                {% if experience.is_current %}
+                                    Present
+                                {% elif experience.end_date %}
+                                    {{ experience.end_date|date:"M Y" }}
+                                {% else %}
+                                    Currently unavailable
+                                {% endif %}
+                            </div>
+                            <h4>{{ experience.position }}</h4>
+                            <h5>{{ experience.company }}</h5>
+                            <p>{{ experience.description }}</p>
+                            <div class="timeline-tech">
+                                {% for tech in experience.technologies.all %}
+                                    <span class="badge bg-primary">{{ tech.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Featured Blog Section -->
+    <section class="featured-blog py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">Latest Blog Posts</h2>
+                    <p class="lead text-muted">Sharing knowledge and insights</p>
+                </div>
+            </div>
+            <div class="row">
+                {% for post in featured_posts %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="blog-card card h-100">
+                            {% if post.featured_image %}
+                                <img src="{{ post.featured_image.url }}"
+                                     class="card-img-top"
+                                     alt="{{ post.title }}">
+                            {% else %}
+                                <div class="card-img-top blog-placeholder">
+                                    <i class="fas fa-blog"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <div class="blog-meta">
+                                    <span class="blog-date">{{ post.published_at|date:"M d, Y" }}</span>
+                                    <span class="blog-reading-time">{{ post.reading_time }} min read</span>
+                                </div>
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.excerpt|default:post.content|striptags|truncatewords:15 }}</p>
+                                <div class="blog-categories">
+                                    {% for category in post.categories.all|slice:":2" %}
+                                        <span class="badge bg-info">{{ category.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'blog:post_detail' post.slug %}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    Read More <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-12 text-center">
+                    <a href="{% url 'blog:blog_list' %}"
+                       class="btn btn-outline-primary btn-lg">
+                        View All Posts <i class="fas fa-blog ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact CTA Section -->
+    <section class="contact-cta py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="display-5 fw-bold mb-4">Let's Work Together</h2>
+                    <p class="lead mb-4">Have a project in mind? I'd love to hear about it!</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'contact:contact' %}"
+                           class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-envelope me-2"></i>Get In Touch
+                        </a>
+                        <a href="mailto:{{ SITE_EMAIL }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Email Me
                         </a>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-        <div class="row mt-4">
-            <div class="col-lg-12 text-center">
-                <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-primary btn-lg">
-                    View All Posts <i class="fas fa-blog ms-2"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact CTA Section -->
-<section class="contact-cta py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h2 class="display-5 fw-bold mb-4">Let's Work Together</h2>
-                <p class="lead mb-4">Have a project in mind? I'd love to hear about it!</p>
-                <div class="cta-buttons">
-                    <a href="{% url 'contact:contact' %}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-envelope me-2"></i>Get In Touch
-                    </a>
-                    <a href="mailto:{{ SITE_EMAIL }}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-paper-plane me-2"></i>Email Me
-                    </a>
+    </section>
+    <!-- Newsletter Section -->
+    <section class="newsletter-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h3 class="mb-4">Stay Updated</h3>
+                    <p class="mb-4">Subscribe to my newsletter for the latest projects and tech insights.</p>
+                    <form action="{% url 'contact:newsletter' %}"
+                          method="post"
+                          class="newsletter-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="email"
+                                       name="email"
+                                       class="form-control form-control-lg"
+                                       placeholder="Your email address"
+                                       required>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-bell me-2"></i>Subscribe
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Newsletter Section -->
-<section class="newsletter-section py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h3 class="mb-4">Stay Updated</h3>
-                <p class="mb-4">Subscribe to my newsletter for the latest projects and tech insights.</p>
-                <form action="{% url 'contact:newsletter' %}" method="POST" class="newsletter-form">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-8">
-                            <input type="email" name="email" class="form-control form-control-lg"
-                                placeholder="Your email address" required>
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-bell me-2"></i>Subscribe
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
-
 {% block extra_css %}
-<style>
+    <style>
     /* Hero Section Styles */
     .hero-section {
         position: relative;
@@ -362,6 +368,15 @@
         min-height: 100vh;
         display: flex;
         align-items: center;
+        /* Keep the hero dark-themed in both light and dark modes */
+        --text-primary: #e9ecef;
+        --text-secondary: #adb5bd;
+        --text-muted: #6c757d;
+        --accent: #00d4ff;
+        --accent-hover: #00a8cc;
+        --border: #2a2e4a;
+        --glass: rgba(30, 33, 57, 0.8);
+        --bg-tertiary: #1e2139;
     }
 
     .hero-content {
@@ -825,5 +840,5 @@
             justify-content: center;
         }
     }
-</style>
+    </style>
 {% endblock %}

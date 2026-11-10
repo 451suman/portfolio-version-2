@@ -2,15 +2,15 @@
 // Dark/Light theme toggle with localStorage persistence
 
 // Initialize theme on page load
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeTheme();
-    
+
     // Add theme toggle event listener
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
-    
+
     // Add theme transition class removal after transition completes
     setTimeout(() => {
         document.body.classList.remove('theme-transition');
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeTheme() {
     // Get saved theme from localStorage or default to dark
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    
+
     // Apply theme
     setTheme(savedTheme);
-    
+
     // Add transition class for smooth theme switching
     document.body.classList.add('theme-transition');
 }
@@ -31,10 +31,10 @@ function initializeTheme() {
 function setTheme(theme) {
     const body = document.body;
     const themeIcon = document.getElementById('themeIcon');
-    
+
     // Set data-theme attribute
     body.setAttribute('data-theme', theme);
-    
+
     // Update theme icon
     if (themeIcon) {
         if (theme === 'dark') {
@@ -43,10 +43,10 @@ function setTheme(theme) {
             themeIcon.className = 'fas fa-sun';
         }
     }
-    
+
     // Save theme to localStorage
     localStorage.setItem('theme', theme);
-    
+
     // Update theme CSS link
     updateThemeCSS(theme);
 }
@@ -54,18 +54,18 @@ function setTheme(theme) {
 function toggleTheme() {
     const currentTheme = document.body.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
+
     // Add transition class
     document.body.classList.add('theme-transition');
-    
+
     // Set new theme
     setTheme(newTheme);
-    
+
     // Remove transition class after animation completes
     setTimeout(() => {
         document.body.classList.remove('theme-transition');
     }, 300);
-    
+
     // Dispatch theme change event
     const event = new CustomEvent('themeChanged', {
         detail: { theme: newTheme }
@@ -109,15 +109,8 @@ function detectSystemTheme() {
     return 'light';
 }
 
-// Listen for system theme changes
-if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only apply system theme if user hasn't manually set a preference
-        if (!localStorage.getItem('theme')) {
-            setTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-}
+// Dark mode is the default theme. The system theme is only used as a
+// fallback hint and never overrides an explicit or default choice.
 
 // ====== THEME UTILITY FUNCTIONS ====== //
 function getTheme() {
